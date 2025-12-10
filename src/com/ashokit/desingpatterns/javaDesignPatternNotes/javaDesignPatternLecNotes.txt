@@ -1,0 +1,890 @@
+############################
+❄️ Factory Design Pattern 
+############################
+➤ The factory design pattern says that define an interface (A java interface or an abstract class) and let the subclasses decide which object to instantiate. The factory method in the interface lets a class defer the instantiation to one or more concrete subclass 
+➤ In factory pattern , we create objects without exposing the creation logic to the client and the client uses the same common interface to create a new type of object 
+➤ In factory pattern , we create object without exposing the creation logic to the client and refer to newly created object using a common interface 
+➤ A factory pattern of factory method pattern says that just define an interface or abstract class for creating an object but let the subclass decide which class to instantiate. 
+
+➤ A factory pattern or factory method pattern says that just define an interface or abstract class for creating an object but let the subclasses decide which class to instantiate  
+➤ The factory method pattern is also known as virtual constructor.
+
+Example: 
+----------
+package com.ashokit.desingpatterns;
+
+public class FactoryPatternExample {
+
+	public static void main(String[] args) {
+		Factory f = new Factory();
+		Notification n = f.createNotification("SMS");
+		n.notifi();
+		Notification n1 = f.createNotification("Email");
+		n1.notifi();
+	}
+}
+
+interface Notification{
+	public void notifi();
+}
+
+class SMSNotification implements Notification {
+	
+	@Override
+	public void notifi() {
+		System.out.println("Triggering notification through SMS");
+	}
+}
+
+class EmailNotification implements Notification {
+	
+	@Override
+	public void notifi() {
+		System.out.println("Triggering notification through Email");
+	}
+}
+
+class Factory {
+	public Notification createNotification(String mode) {
+		
+		if(mode.equalsIgnoreCase("SMS")) {
+			Notification n = new SMSNotification();
+			return n;
+		}
+		if(mode.equalsIgnoreCase("Email")) {
+			Notification n = new EmailNotification();
+			return n;
+		}
+		return null;
+	}
+}
+
+############################
+❄️ Chain of responsibility 
+############################
+➤ Chain of responsibilty as a design pattern consisting of a source of command objects and a series of processing objects 
+👉 What problems can the chain of responsibility design pattern solves? 
+➤ Coupling the sender of a request to its receiver should be avoided 
+➤ It should be possible that more than one receiver can handle a request 
+
+➤ In the java world we benefit from chain of responsibility every day . One such classic example is servlet filters in java that allows multiple filters to process an http request. Though in that case each filter invokes the chain instead of the next filter .
+
+public class CustomFilter implements Filter{
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException{
+		//process the request 
+		//pass the request(ie; the command)along the filter chain 
+		chain.doFilter(request,response);
+	}
+}
+// Filter is something in servlets which gets executed before the controller.If the provided credentials are correct then it will send the request to the controller else it will guide you back to the UI.
+
+Example: 
+---------
+package com.ashokit.desingpatterns.chainofresponsibility;
+
+import java.util.Scanner;
+
+public class ChainOfResATMExamp {
+
+	DispenceChain d;
+	ChainOfResATMExamp() {
+	
+		this.d=new Notes2000Rack();
+		DispenceChain d1 = new Notes500Rack();
+		DispenceChain d2 = new Notes100Rack();
+		d.chain(d1);
+		d1.chain(d2);
+	}
+	
+	public static void main(String[] args) {
+		
+		ChainOfResATMExamp c = new ChainOfResATMExamp();
+		while(true) {
+			System.out.println("Please enter the amount to be withdrawn");
+			Scanner s = new Scanner(System.in);
+			int amount = s.nextInt();
+			if(amount!=0) {
+				if(amount % 100 != 0) {
+					System.out.println("Please enter multiples of 100");
+					return;
+				}else {
+					c.d.dispence(new Currency(amount));
+				}
+			}
+		}
+	}
+}
+
+class Currency{
+	private int amount;
+	
+	Currency(int amt){
+		this.amount = amt;
+	}
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+	
+}
+
+interface DispenceChain{
+	void dispence(Currency current);
+	void chain(DispenceChain d);
+}
+
+class Notes2000Rack implements DispenceChain{
+
+	DispenceChain chain;
+	
+	@Override
+	public void dispence(Currency current) {
+		// TODO Auto-generated method stub
+		int noOf2000Notes = current.getAmount()/2000;
+		System.out.println("Dispencing " +noOf2000Notes +" 2000 notes ");
+		int remainder = current.getAmount()%2000;
+		if(remainder != 0) {
+			chain.dispence(new Currency(remainder));
+		}
+		
+	}
+
+	@Override
+	public void chain(DispenceChain chain) {
+		// TODO Auto-generated method stub
+		this.chain=chain;
+	}
+	
+}
+
+class Notes500Rack implements DispenceChain{
+
+	DispenceChain chain;
+	
+	@Override
+	public void dispence(Currency current) {
+		// TODO Auto-generated method stub
+		int noOf500Notes = current.getAmount()/500;
+		System.out.println("Dispencing " +noOf500Notes +" 500 notes ");
+		int remainder = current.getAmount()%500;
+		if(remainder != 0) {
+			chain.dispence(new Currency(remainder));
+		}
+		
+	}
+
+	@Override
+	public void chain(DispenceChain chain) {
+		// TODO Auto-generated method stub
+		this.chain=chain;
+	}
+	
+}
+
+class Notes100Rack implements DispenceChain{
+
+	DispenceChain chain;
+	
+	@Override
+	public void dispence(Currency current) {
+		// TODO Auto-generated method stub
+		int noOf100Notes = current.getAmount()/100;
+		System.out.println("Dispencing " +noOf100Notes +" 100 notes ");
+		int remainder = current.getAmount()%100;
+		if(remainder != 0) {
+			chain.dispence(new Currency(remainder));
+		}
+		
+	}
+
+	@Override
+	public void chain(DispenceChain chain) {
+		// TODO Auto-generated method stub
+		this.chain=chain;  
+	}
+	
+}
+
+###########################
+❄️ Builder Design Pattern 
+###########################
+➤  The builder pattern is a design pattern designed to provide a flexible solution to various object creation problems in OOPS. The intent of the builder design pattern is to separate the construction of a complex object from its representation 
+➤ It is used to construct a complex object step by step and the final step will return the object. The process of constructing an object should be generic so that it can be used to create different representations of the same object 
+
+➤ Thus, there are two specific problems that we need to solve: 
+	=> Too many constructor arguments 
+	=> Incorrect object state.
+
+👉 Advantages of builder design pattern 
+=========================================
+➤ The parameters to the constructor are reduced and are provided in highly readable method calls .
+➤ Builder design pattern also helps in minmizing the number of parameters in the constructor and thus there is no need to pass in null for optional parameters to the constructor
+➤ Object is always instantiated in a complete state.
+➤ Immutable objects can be built without much complex logic in the object building process.
+
+✨ When to use builder pattern ?
+*********************************
+➤ If you find yourself in a situation where you keep on adding new parameters to a constructor resulting in code that becomes error-prone and hard to read perhaps its a good time to take a step back and consider refactoring your code to use a builder 
+➤ Look at the user class and user builder class which we created in the class to implement builder design pattern. User class can have many user attributes, like first name, last name, email, mobile, address and in future we can have more. If we create the constructor with these fields if the field is optional then we have to pass null and every time we should be concious while creating the object, we may pass address in place of email if we mistaken.
+➤ To avoid all these issues instead of calling the constructor we can create the method and call these methods to create the object. So complex object can be easily developed with this approach 
+➤ We created user builder inner class and added all the attributes using the methods and created the user object.
+
+Example: 
+---------
+package com.ashokit.desingpatterns.builderdesignpattern;
+
+public class UserWithBuilderPattern {
+	
+	
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "FirstName: "+firstName+ " LastName: "+lastName;
+	}
+
+	UserWithBuilderPattern(UserBuilder ub){
+		this.firstName = ub.firstName;
+		this.lastName = ub.lastName;
+		this.age = ub.age;
+		this.mobile = ub.mobile;
+	}
+
+	private String firstName;//required
+	private String lastName;//required
+	private int age;//not required
+	private long mobile;//not required
+	
+	public String getFirstName() {
+		return firstName;
+	}
+	
+	public String getLastName() {
+		return lastName;
+	}
+	
+	public int getAge() {
+		return age;
+	}
+	
+	public long getMobile() {
+		return mobile;
+	}	
+	
+	static class UserBuilder{
+		
+		private String firstName;
+		private String lastName;
+		private int age;
+		private long mobile;
+		
+		public UserBuilder(String firstName, String lastName) {
+			this.firstName = firstName;
+			this.lastName = lastName;
+		}
+		
+		public UserBuilder age(int age) {
+			this.age = age;
+			return this;
+		}
+		
+		public UserBuilder mobile(long mobile) {
+			this.mobile = mobile;
+			return this;
+		}
+		
+		// using the build() we will convert the UserBuilder object to UserWithBuilderPattern object
+		UserWithBuilderPattern build() {
+			UserWithBuilderPattern u = new UserWithBuilderPattern(this);
+			return u;
+		}
+
+	
+	}
+	
+	public static void main(String[] args) {
+		//Now suppose here we want to create an object with all the fields 
+		UserWithBuilderPattern u = new UserWithBuilderPattern.UserBuilder("Deepak", "Yadav").age(24).mobile(80906337).build();
+		System.out.println(u);
+		//Now for fn,ln
+		UserWithBuilderPattern u1 = new UserWithBuilderPattern.UserBuilder("Viper", "Ankur").build();
+		System.out.println(u1);
+		// fn, ln, age
+		UserWithBuilderPattern u2 = new UserWithBuilderPattern.UserBuilder("Suraj","Yadav").age(22).build();
+		System.out.println(u2);
+		//So hence like this using the builder design pattern we have solved the problem of object creation.
+	}
+
+}
+/*
+ * So what we will do is we will create an object for the required fields 
+ * Then we will add the optional field that is provided to that object
+ * Eg: firtName and lastName are the required fields so we will create object using these fields 
+ * (fn,ln).add(age).add(mobile).build() //like this if user provides age and mobile number then we add it.
+ * So this is how we create an object using the builder design pattern.
+ * 
+ * ## How do we do this ? 
+ * -> So we will create an inner class in which i will declare the constructor with the required fileds
+ */
+
+##############################
+❄️ Decorator Design Pattern
+##############################
+➤ The decorator pattern is a design pattern that allows behaviour to be added to an individual object dynamically wihthout affecting the behaviour of other objects within the same class .The decorator pattern is often useful for adhering to the single responsibility principle as it allows funtionality to be divided between classes with unique areas of concern . Decorator pattern allow a user to add new functionality to an existing object without altering its structure so there is no change to the original class 
+➤ Decorator desing pattern create decorator classes which wrap the original class and supply additional functionality by keeping the class methods signature unchanged 
+➤ Decorator desing pattern are most frequently used for applying single responsibility principles since we divide the functionality into classes with unique areas of concern 
+➤ Decorator design pattern is useful in providing runtime modification abilities and hence more flexible . Its easy to maintain and extend when the amount of choices are more. 
+➤ Decorator pattern is used a lot in Java IO classes like FileReader , BufferedReader etc.
+
+Example: 
+--------
+package com.ashokit.desingpatterns.decorateddesignpattern;
+
+public class DecoratorPatternExample {
+
+	public static void main(String[] args) {
+		BasicPlan kartikPolicy = new BasePolicy();
+		System.out.println(kartikPolicy.getPremium());
+		System.out.println(kartikPolicy.policyDetails());
+		
+		BasicPlan surajPolicy = new BasePolicy();
+		System.out.println(surajPolicy.getPremium());
+		System.out.println(surajPolicy.policyDetails());
+		
+		//Suppose Suraj doesn't want to take the same policy he wants to add some more things to this base policy 
+		//If we add anything in the BasePolicy class then it will affect every other object of the class  so for doing this we will be using decorator design pattern
+		
+		surajPolicy = new AccidentalBenefit(surajPolicy);
+		System.out.println(surajPolicy.getPremium());
+		System.out.println(surajPolicy.policyDetails());
+		
+		surajPolicy = new CriticalBenefit(surajPolicy);
+		System.out.println(surajPolicy.getPremium());
+		System.out.println(surajPolicy.policyDetails());
+		
+		//So like this here by using AccidentalBenefit class i am able to modify the behaviour of the single object of the class without affecting the another objects.
+	}
+}
+
+interface BasicPlan{
+	int getPremium();
+	String policyDetails();
+}
+
+class BasePolicy implements BasicPlan{
+
+	@Override
+	public int getPremium() {
+		// TODO Auto-generated method stub
+		return 1566;
+	}
+
+	@Override
+	public String policyDetails() {
+		// TODO Auto-generated method stub
+		return "This is a basic plan";
+	}
+	
+}
+
+abstract class PolicyDecorator implements BasicPlan{
+	BasicPlan basicPlan;
+	
+	PolicyDecorator(BasicPlan basicPlan){
+		this.basicPlan = basicPlan;
+	}
+
+	@Override
+	public int getPremium() {
+		// TODO Auto-generated method stub
+		return basicPlan.getPremium();
+	}
+
+	@Override
+	public String policyDetails() {
+		// TODO Auto-generated method stub
+		return basicPlan.policyDetails();
+	}
+		
+}
+
+class AccidentalBenefit extends PolicyDecorator{
+	
+	AccidentalBenefit(BasicPlan basicPlan){
+		super(basicPlan);
+	}
+
+	@Override
+	public int getPremium() {
+		// TODO Auto-generated method stub
+		return super.getPremium()+58;
+	}
+
+	@Override
+	public String policyDetails() {
+		// TODO Auto-generated method stub
+		return super.policyDetails()+" Accidental Cover is provided ";
+	}	
+	
+}
+
+class CriticalBenefit extends PolicyDecorator{
+	
+	CriticalBenefit(BasicPlan basicPlan){
+		super(basicPlan);
+	}
+
+	@Override
+	public int getPremium() {
+		// TODO Auto-generated method stub
+		return super.getPremium()+650;
+	}
+
+	@Override
+	public String policyDetails() {
+		// TODO Auto-generated method stub
+		return super.policyDetails()+"and Critical Cover is provided ";
+	}	
+	
+}
+/*
+ * So for doing this we will write another class decorator which will implement the BasicPlan interface
+ * Using that class we will create another class called AccidentalBenefit  
+*/
+
+############################
+❄️ Adapter Desing Pattern 
+############################
+➤ The adapter pattern is a software design pattern that allows the interface of an existing class to be used as another interface 
+➤ It is often used to make existing classes work with others without modifying their source code 
+
+🌟 Simple definition in other words 
+=====================================
+➤ The adapter design pattern is a structural desing pattern that allows two unrelated/uncommon interfaces to work together. In other words the adapter pattern makes two incompatible interfaces compatible without changing their existing code.
+➤ Adapter patterns use a single class(the adapter class) to join functioinalities of independent or incompatible interfaces/classes.
+➤ The adapter pattern is a structural design pattern that acts as a bridge between two interfaces that are incompatible . The term adapter is used to represent an object that enables two mutually incompatible interfaces to communicate and collaborate
+
+Example: 
+---------
+package com.ashokit.desingpatterns.adapterdesignpattern;
+
+public class AdapterDesignPatternExample {
+
+	public static void main(String[] args) {
+		AshokIt as = new AshokIt();
+		as.setPaymentType("UPI");
+	    as.setDetails("12346789");
+	    
+	    Paytm paytm = PaymentAdapter.ConvertBillDeskToPaytm(as);
+	}
+	
+}
+
+interface BillDesk{
+	void setPaymentType(String paymentType);
+	String getPaymentType();
+	void setDetails(String data);
+	String getDetails();
+}
+
+interface Paytm {
+	void setTypeOfPayment(String paymentType);
+	String getTypeOfPayment();
+	void provideDetails(String data);
+	String getDetails(); 
+}
+
+class PaymentAdapter implements BillDesk{
+	static Paytm p = null;
+	
+	PaymentAdapter(Paytm p){
+		this.p = p;
+	}
+
+	@Override
+	public void setPaymentType(String paymentType) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	static Paytm ConvertBillDeskToPaytm(BillDesk b){
+		p.setTypeOfPayment(b.getPaymentType());
+		p.provideDetails(b.getDetails());
+		return p;
+	}
+
+	@Override
+	public String getPaymentType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDetails(String data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getDetails() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}
+
+class AshokIt implements BillDesk{
+
+	String PaymentType = null;
+	String data = null;
+	@Override
+	public void setPaymentType(String paymentType) {
+		// TODO Auto-generated method stub
+		this.PaymentType = paymentType;
+	}
+
+	@Override
+	public String getPaymentType() {
+		// TODO Auto-generated method stub
+		return PaymentType;
+	}
+
+	@Override
+	public void setDetails(String data) {
+		// TODO Auto-generated method stub
+		this.data = data;
+	}
+
+	@Override
+	public String getDetails() {
+		// TODO Auto-generated method stub
+		return data;
+	}	
+}
+
+############################
+❄️ Iterator Design Pattern
+############################
+➤ Collections are one of the most used data types in programming nonetheless, a collection is just a container for a group of objects 
+➤ Most collections store their elements in simple lists. However some of them are based on stacks, trees, graphs and other complex data structures. 
+➤ But no matter how a collection is structured, it must provide some way of accessing its elemnts so that other code can use these elements. There should be a way to go through each element of the collection without accessing the same elements over and over 
+➤ The main idea of the iterator pattern is to extract the traversal behaviour of a collection into a separate object called an iterator.
+➤ In addition to implementing the algo itself an iterator object encapsulates all of the traversal details, such as the current position and how many elements are left till the end. Because of this several iterators can go through the same collection at the same time, independently of each others
+➤ Usually iterators provide one primary method for fetching elements of the collection . The client can keep running this method until it doesnt return anything which means that the iterator has traversed all of the elements.
+
+#############################
+❄️ Observer Design Pattern 
+#############################
+➤ It is a behavioural design pattern . It specifies communication between objects observable and observers. An observable is an object which notifies observers about the changes in its state.
+➤ The observer design pattern is a software design pattern in which an object named the subject maintains a list of its dependents called observers, and notifies them automatically of any state changes usually by calling one of their methods .
+➤ It is mainly used for implementing distributed event handling systems 
+➤ In simple words if we take the example of twitter if 100 users are following modi then when any tweet is added by modi the this tweet notification will be sent to 100 users 
+➤ For small scale applications if we  want to implement the event driven mechanism then we should go for observer design pattern.
+
+🌟 Benefits 
+**************
+➤ It describes the coupling between the objects and the observer 
+➤ It provides the support for broadcast type communication 
+
+🌟 Usage 
+**********
+➤ When the change of a state in one object must be reflected in another object without keeping the objects tight coupled
+
+Example: 
+---------
+package com.ashokit.desingpatterns.observerdesignpattern;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ObserverDesignPatternExample {
+
+	public static void main(String[] args) {
+		Follower karthik = new Follower("Kartik");
+		Follower babu = new Follower("Babu");
+		Follower suraj = new Follower("Suraj");
+		Follower deepak = new Follower("Deepak");
+		Follower viper = new Follower("Viper");
+		Follower arnab = new Follower("Arnab");
+		Follower rashid = new Follower("Rashid");
+		
+		InsuranceCompany LIC = new InsuranceCompany("LIC");
+		InsuranceCompany TATA = new InsuranceCompany("TATA AIA");
+		
+		LIC.addSubscriber(karthik);
+		LIC.addSubscriber(viper);
+		LIC.addSubscriber(suraj);
+		LIC.addSubscriber(deepak);
+		LIC.addSubscriber(babu);
+		
+		TATA.addSubscriber(arnab);
+		TATA.addSubscriber(rashid);
+		
+		LIC.broadcastMessage("Hi Everyone -> new policy called Jeevan anand is introduced");
+		TATA.broadcastMessage("Hey tata website is not available from 12am to 1pm");
+	}
+}
+
+interface FollowerNotification{
+	void notification(String tweet);
+}
+
+class Follower implements FollowerNotification{
+	String name;
+	
+	Follower(String name){
+		this.name = name;
+	}
+
+	@Override
+	public void notification(String tweet) {
+		// TODO Auto-generated method stub
+		System.out.println(name+" has notification received "+ tweet);
+	}
+	
+}
+
+interface ManageSubscriberAndNotify{
+	
+	public void addSubscriber(FollowerNotification r);
+	public void removeSubscriber(FollowerNotification r);
+	public void notifyAllSubscriber(String tweet);
+}
+
+class InsuranceCompany implements ManageSubscriberAndNotify{
+
+	String name;
+	InsuranceCompany(String name){
+		this.name = name;
+	}
+	
+	List<FollowerNotification> subscriberList = new ArrayList<>();
+	
+	@Override
+	public void addSubscriber(FollowerNotification r) {
+		// TODO Auto-generated method stub
+		subscriberList.add(r);
+	}
+
+	@Override
+	public void removeSubscriber(FollowerNotification r) {
+		// TODO Auto-generated method stub
+		subscriberList.remove(r);
+	}
+
+	@Override
+	public void notifyAllSubscriber(String tweet) {
+		// TODO Auto-generated method stub
+		subscriberList.forEach(f -> f.notification(tweet));
+	}
+	
+	public void broadcastMessage(String tweet) {
+		notifyAllSubscriber(tweet);
+	}
+	
+	
+}
+
+##############################
+❄️ Strategy Desing Pattern 
+###############################
+➤ Strategy pattern (also known as the policy pattern) is behavioural software design pattern that enables selecting an algo at runtime. Instead of implementing a single algo directly code receives run time instructions as to which in a family of algo to use 
+➤ The application can switch strategies at run time 
+➤ Strategy enables the clients to choose the required algo without using a switch  statement or a series of if else statements 
+
+🌟 When to use startegy design pattern ?
+===========================================
+➤ Use the strategy pattern when you want to use different variants of an algo within an object and be able to switch from one algo to another during runtime. Use the startegy when you have a lot of similar classes that only differ in the way they execute some behaviour 
+
+➤ Here some examples of startegy in core java libraries: 
+👉 java.util.Comparator#compare() called from Collections#sort() 
+👉 javax.servlet.http.HttpServlet:service() method, plus all of the doxxx() methods that accept HttpServletRequest and HttpServletResponse objects as arguments. 
+
+Example: 
+---------
+package com.ashokit.desingpatterns.strategydesignpattern;
+
+public class StrategyDesignPatternBankExample {
+
+	public static void main(String[] args) {
+		Customer c = new Customer(new PreferredCustomer());
+		c.showInterest();
+		
+		Customer c1 = new Customer(new RegularCustomer());
+		c1.showInterest();
+	}
+}
+
+interface CustomerType{
+	public void interestRate();
+}
+
+class PreferredCustomer implements CustomerType{
+
+	@Override
+	public void interestRate() {
+		// TODO Auto-generated method stub
+		System.out.println("Interest Rate is 9.7%");
+	}
+	
+}
+
+class RegularCustomer implements CustomerType{
+
+	@Override
+	public void interestRate() {
+		// TODO Auto-generated method stub
+		System.out.println("Interest Rate is 10%");
+	}
+	
+}
+
+class Customer {
+	
+	private CustomerType c;
+	public Customer(CustomerType c) {
+		
+		this.c = c;
+		
+	}
+	
+	void showInterest() {
+		c.interestRate();
+	}
+}
+
+-> In the above example we are passing the object of the class based on which it is decided which class showInterest() method will be executed.
+
+############################
+❄️ Template Design Pattern 
+############################
+➤ The template method is a method in a superclass usually an abstract super class and defines the  skeleton of an operation in terms of a number of high level steps. These steps are themselves implemented by additional helper methods in the same class as the template method. 
+➤ The intent of the tmeplate method is to define the overall structure of the operation while allowing subclasses to refine or redefine certain steps.
+➤ Template method defines the steps to execute an algorithm and it can provide default implementation that might be common for all or some of the subclass.
+
+➤ Let's understand this pattern with an example suppose we want to provide an algo to build a house . The steps need to be performed to build a house are building foundation, building pillars, building walls and windows. The important point is that we cant change the order of execution because we cant build windows before building the foundation . So in this case we can create a template method that will use different methods to build the house.
+
+Example: 
+--------
+package com.ashokit.desingpatterns.templatedesignpattern;
+
+public class TemplateDesignPatternExample {
+
+	public static void main(String[] args) {
+		Account a = new Account("Karthik", 1000);
+		Transaction t = new DebitTransaction(a);
+		t.templateMethod(2000);
+		Transaction t1 = new CreditTransaction(a);
+		t1.templateMethod(3000);
+	}
+	
+}
+
+//The template method should be final otherwise any of the class implementing the Transaction class will be able to override this 
+//We don't want that we want that this order should be followed so we will make it final.
+
+abstract class Transaction{
+	
+	public final void templateMethod(double amt) {
+		if(authenticate() && validateInput() && updateLogsDB() && perfromTransaction(amt)) {  
+			notifyUser();
+		}
+	}
+	
+	public abstract boolean authenticate();
+	public abstract boolean validateInput();
+	public boolean updateLogsDB() {
+		System.out.println("DB updates/Log");
+		return true;
+	}
+	public abstract boolean perfromTransaction(double amt);  
+	public boolean notifyUser() {
+		System.out.println("Successfull transaction");
+		return true;
+	}
+	
+}
+
+class DebitTransaction extends Transaction {
+
+	Account a;
+	DebitTransaction(Account a){
+		this.a = a;
+	}
+	@Override
+	public boolean authenticate() {
+		// TODO Auto-generated method stub
+		System.out.println("Debit authenticate");
+		return true;
+	}
+
+	@Override
+	public boolean validateInput() {
+		// TODO Auto-generated method stub
+		System.out.println("Validated and amount is not negative");
+		return true;
+	}
+
+	@Override
+	public boolean perfromTransaction(double amt) {
+		// TODO Auto-generated method stub
+		a.debitTransaction(amt);
+		return true;
+	}
+	
+}
+
+class CreditTransaction extends Transaction {
+
+	Account a;
+	CreditTransaction(Account a){
+		this.a = a;
+	}
+	@Override
+	public boolean authenticate() {
+		// TODO Auto-generated method stub
+		System.out.println("Debit authenticate");
+		return true;
+	}
+
+	@Override
+	public boolean validateInput() {
+		// TODO Auto-generated method stub
+		System.out.println("Validated and amount is not negative");
+		return true;
+	}
+
+	@Override
+	public boolean perfromTransaction(double amt) {
+		// TODO Auto-generated method stub
+		a.creditTransaction(amt);
+		return true;
+	}
+	
+}
+
+class Account {
+	String accountHolderName;
+	double accountBalance;
+	
+	public Account(String name, double balance) {
+		this.accountHolderName = name;
+		this.accountBalance = balance;
+	}
+	
+	public void debitTransaction(double amtToBeDebited) {
+		accountBalance = accountBalance-amtToBeDebited;
+	}
+	
+	public void creditTransaction(double amtToBeDebited) {
+		accountBalance = accountBalance+amtToBeDebited;
+	}
+}
+
+#############################
+❄️ Prototype Design Pattern 
+#############################
+➤ Prototype design pattern is nothing but creating multiple objects using clone. 

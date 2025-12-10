@@ -1,0 +1,1049 @@
+#############################
+🧩 Singleton Design Pattern 
+#############################
+➤ Definition
+***************
+The Singleton Pattern ensures that only one object of a class is created during the entire application lifecycle and provides a global point of access to that object.
+
+🧩 Why do we need Singleton?
+******************************
+➤ To control access to shared resources such as:
+➤ Logging
+➤ Database connection
+➤ Caches
+➤ Configuration settings
+➤ Thread pools
+
+🧩 Key Characteristics (Must-Know for Interviews)
+***************************************************
+➤ Only one instance exists.
+➤ Lazy or Eager creation depending on design.
+➤ Global access point (getInstance() method).
+➤ Must be thread-safe in multi-threaded applications.
+➤ Must prevent cloning, reflection, and serialization from breaking the Singleton property (important interview point).
+
+🧩 Types of Singleton Implementations
+***************************************
+1) Eager Initialization (Simple & Thread-Safe)
+===============================================
+➤ Instance created at class loading time.
+
+public class Singleton {
+    private static final Singleton instance = new Singleton();
+    private Singleton() {}
+    public static Singleton getInstance() {
+        return instance;
+    }
+}
+
+➤ Pros: Simple, thread-safe
+➤ Cons: Instance created even if unused (memory waste)
+
+2) Lazy Initialization (Not Thread-Safe)
+===========================================
+public class Singleton {
+    private static Singleton instance;
+    private Singleton() {}
+    public static Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+
+➤ Pros: Instance created only when needed
+➤ Cons: Not thread-safe → multiple threads may create multiple instances
+
+3) Thread-Safe Singleton (Synchronized Method)
+==============================================
+public class Singleton {
+    private static Singleton instance;
+    private Singleton() {}
+    public static synchronized Singleton getInstance() {
+        if (instance == null)
+            instance = new Singleton();
+        return instance;
+    }
+}
+
+➤ Pros: Thread-safe
+➤ Cons: Slow due to synchronization on every call
+
+4) Double-Checked Locking (Best Performance)
+==============================================
+public class Singleton {
+    private static volatile Singleton instance;
+    private Singleton() {}
+    public static Singleton getInstance() {
+        if (instance == null) {
+            synchronized (Singleton.class) {
+                if (instance == null) {
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+
+➤ Pros: Fast + thread-safe
+➤ Cons: Slightly complex
+➤ volatile is required to prevent instruction reordering
+
+5) Bill Pugh (Static Inner Class) – The Best Recommended Approach
+==================================================================
+public class Singleton {
+    private Singleton() {}
+    private static class Helper {
+        private static final Singleton instance = new Singleton();
+    }
+    public static Singleton getInstance() {
+        return Helper.instance;
+    }
+}
+
+➤ Pros:
+➤ Lazy-loaded
+➤ Thread-safe
+➤ No synchronization overhead
+➤ Cons: None — widely accepted as best practice
+
+6) Enum Singleton (Most Robust)
+=================================
+public enum Singleton {
+    INSTANCE;
+}
+
+➤ Pros:
+➤ Prevents serialization issues
+➤ Prevents reflection attacks
+➤ Cons:
+➤ Cannot be lazily loaded
+➤ Less flexible (cannot extend another class)
+
+🧩 How Singleton Protects Against Attacks
+*******************************************
+➤ Reflection attack
+➤ Private constructor may still be accessed
+➤ Fix → throw exception inside constructor
+
+➤ Serialization attack
+➤ Fix → implement readResolve()
+
+➤ Cloning attack
+➤ Fix → override clone to throw exception
+
+🧩 Real-World Examples
+************************
+➤ Database connection manager (JDBC)
+➤ Spring beans (by default Singleton scope)
+➤ Logger frameworks (Log4j, SLF4J)
+➤ Runtime class in Java (Runtime.getRuntime() is a singleton)
+
+🧩 Advantages
+****************
+➤ Controlled access to a single shared resource
+➤ Saves memory — only one instance
+➤ Avoids inconsistent state
+➤ Useful for centralized configurations
+
+🧩 Disadvantages
+*******************
+➤ Hard to unit test (global state)
+➤ Can become a God Object
+➤ Can cause hidden dependencies
+➤ Encourages tight coupling
+
+🧩 Frequently Asked Interview Questions
+*****************************************
+➤ What is a Singleton pattern?
+➤ Why are Singletons used?
+➤ Difference between lazy and eager initialization?
+➤ How do you make a Singleton thread-safe?
+➤ Why use volatile in double-checked locking?
+➤ How does Singleton break with serialization/cloning/reflection?
+➤ Why is Enum Singleton preferred?
+
+############################
+🧩 Factory Design Pattern
+############################
+🧩 Definition
+***************
+➤ The Factory Pattern (also called Factory Method Pattern) is a Creational Design Pattern that provides a way to create objects without exposing the object creation logic to the client.
+➤ Instead of calling the constructor directly, the client uses a factory method to create objects.
+
+🧩 Intent (Why Factory Method?)
+*********************************
+➤ To define an interface for creating objects but let subclasses decide which class to instantiate.
+➤ Helps in creating objects when the exact type is determined at runtime.
+➤ Provides loose coupling by eliminating direct dependency on concrete classes.
+
+🧩 Key Characteristics (Must-Know for Interviews)
+***************************************************
+➤ Client uses factory instead of new.
+➤ Reduces tight coupling between object creation and usage.
+➤ Helps follow SOLID principles (especially OCP & SRP).
+➤ Object type is selected based on input/logic.
+➤ Easy to add new product types without modifying existing code.
+
+🧩 When to Use Factory Pattern?
+*********************************
+➤ When you don’t know the exact object to create until runtime
+➤ When a class wants its subclasses to specify the objects it creates
+➤ When object creation logic is complex
+➤ When you want to centralize object creation
+➤ When you want to reduce dependency on concrete classes
+
+🧩 Real-World Examples
+**************************
+➤ Java Calendar.getInstance()
+➤ JDBC DriverManager.getConnection()
+➤ Spring Bean Factory / ApplicationContext
+➤ NumberFormat.getInstance()
+➤ Log4j LogManager
+
+🧩 Simple Example — Without Factory (Problem)
+================================================
+Car car = new Swift();  // tightly coupled to Swift class
+
+➤ Problem: If you want Baleno or Fortuner → modify code everywhere.
+
+🧩 Using Factory Pattern (Solution)
+======================================
+Step 1: Create Product Interface
+---------------------------------
+public interface Car {
+    void drive();
+}
+
+Step 2: Create Concrete Products
+-----------------------------------
+public class Swift implements Car {
+    public void drive() { System.out.println("Swift driving..."); }
+}
+
+public class Baleno implements Car {
+    public void drive() { System.out.println("Baleno driving..."); }
+}
+
+Step 3: Create Factory Class
+-------------------------------
+public class CarFactory {
+
+    public static Car getCar(String type) {
+        if (type.equalsIgnoreCase("swift")) {
+            return new Swift();
+        } else if (type.equalsIgnoreCase("baleno")) {
+            return new Baleno();
+        }
+        return null;
+    }
+}
+
+Step 4: Client Code
+--------------------
+Car car = CarFactory.getCar("baleno");
+car.drive();
+
+➤ Client does not know how objects are created → loose coupling achieved.
+
+🧩 Factory Pattern UML Structure
+**********************************
+➤ Creator (Factory Class)
+➤ Contains Factory Method (getObject())
+
+➤ Product Interface (Common Parent)
+➤ Car
+
+➤ Concrete Products
+➤ Swift
+➤ Baleno
+
+➤ Client
+➤ Calls the factory
+
+🧩 Advantages
+****************
+➤ Less coupling between client and objects
+➤ Centralized object creation
+➤ Code becomes more maintainable
+➤ Follows Open/Closed Principle
+➤ Helpful when object creation is complex
+
+🧩 Disadvantages
+********************
+➤ More classes (Factory + Product classes)
+➤ Sometimes adds unnecessary abstraction
+➤ Switch/if-else can grow if many products are added
+➤ (But can be fixed using more advanced patterns like Abstract Factory or Factory Method Pattern with inheritance)
+
+🧩 Variations of Factory Pattern
+***********************************
+1) Simple Factory (Not part of GoF, but commonly used)
+=========================================================
+➤ A single factory class with logic to create objects → the one we wrote above.
+
+2) Factory Method Pattern (GoF)
+================================
+➤ Lets subclasses decide which class to instantiate
+➤ Uses inheritance
+
+3) Abstract Factory Pattern
+==============================
+➤ Creates families of related objects
+➤ Example: UI themes (DarkThemeButton, DarkThemeCheckbox)
+
+🧩 Interview Questions (Very Common)
+***************************************
+➤ What is the Factory Method Pattern?
+➤ How is it different from Abstract Factory?
+➤ Why not use constructors directly?
+➤ What problem does Factory solve?
+➤ Where is Factory used in Java?
+➤ How does Factory support OCP?
+➤ Can Factory return different objects based on configuration? (Yes)
+
+############################################
+🧩 Chain of Responsibility Design Pattern 
+############################################
+🧩 Definition
+****************
+➤ The Chain of Responsibility (CoR) is a Behavioral Design Pattern that allows you to pass a request along a chain of handlers, where each handler decides:
+➤ whether to process the request, OR
+➤ pass it to the next handler in the chain.
+
+➤ This pattern decouples the sender and receiver and avoids if-else/switch ladders.
+
+🧩 Intent (Why Chain of Responsibility?)
+******************************************
+➤ To avoid tightly coupling request sender and receiver.
+➤ To allow multiple objects a chance to process a request.
+➤ To build flexible and dynamic chains of handlers.
+➤ To replace long if-else conditions with clean handler objects.
+
+🧩 Real-World Examples
+************************
+➤ Customer support escalation
+➤ Level 1 → Level 2 → Level 3
+➤ ATM withdrawal handler
+➤ Authentication filters in web security
+➤ Logging frameworks (INFO → DEBUG → ERROR)
+➤ Servlet filters in Java EE
+➤ Spring Boot Handler Interceptors / Filter Chains
+➤ Exception handling chain
+
+🧩 When to Use CoR Pattern?
+******************************
+➤ When multiple handlers can process a request.
+➤ When you want to remove large conditional blocks.
+➤ When handlers should be dynamically arranged.
+➤ When requests need to be processed or forwarded without knowledge of the receiving handler.
+
+🧩 Key Characteristics (Must Know for Interviews)
+****************************************************
+➤ Each handler has a reference to the next handler.
+➤ Request moves step-by-step through the chain.
+➤ Handler can:
+➤ Handle the request
+➤ OR pass it along
+➤ OR do both
+➤ Follows Open/Closed Principle → new handlers can be added easily.
+➤ Decouples sender from receiver.
+
+🧩 Structure (UML Essentials)
+********************************
+➤ Handler (abstract class / interface)
+➤ Defines method to handle request
+➤ Has reference to next handler
+
+➤ Concrete Handlers
+➤ Implement the actual logic
+➤ Decide to handle or forward
+
+➤ Client
+➤ Creates and links handlers
+➤ Sends request to the first handler
+
+🧩 Java Example — Support Ticket Chain
+****************************************
+1) Handler Interface
+---------------------
+public abstract class SupportHandler {
+    protected SupportHandler next;
+
+    public void setNextHandler(SupportHandler next) {
+        this.next = next;
+    }
+    public abstract void handleRequest(String issueLevel);
+}
+
+2) Concrete Handlers
+-----------------------
+public class Level1Support extends SupportHandler {
+    @Override
+    public void handleRequest(String issueLevel) {
+        if (issueLevel.equals("LOW")) {
+            System.out.println("Level 1 handled the issue");
+        } else if (next != null) {
+            next.handleRequest(issueLevel);
+        }
+    }
+}
+
+public class Level2Support extends SupportHandler {
+    @Override
+    public void handleRequest(String issueLevel) {
+        if (issueLevel.equals("MEDIUM")) {
+            System.out.println("Level 2 handled the issue");
+        } else if (next != null) {
+            next.handleRequest(issueLevel);
+        }
+    }
+}
+
+public class Level3Support extends SupportHandler {
+    @Override
+    public void handleRequest(String issueLevel) {
+        if (issueLevel.equals("HIGH")) {
+            System.out.println("Level 3 handled the issue");
+        } else {
+            System.out.println("Issue cannot be handled!");
+        }
+    }
+}
+
+3) Client Code
+---------------
+public class Client {
+    public static void main(String[] args) {
+        SupportHandler l1 = new Level1Support();
+        SupportHandler l2 = new Level2Support();
+        SupportHandler l3 = new Level3Support();
+
+        l1.setNextHandler(l2);
+        l2.setNextHandler(l3);
+
+        l1.handleRequest("MEDIUM");
+    }
+}
+
+🧩 Output
+===========
+Level 2 handled the issue
+
+🧩 Advantages
+***************
+➤ Eliminates long if-else chains
+➤ Easy to add new handlers
+➤ Loose coupling between sender and receiver
+➤ Follows SRP (each handler has its own logic)
+➤ Flexible — order of handlers can be changed at runtime
+
+🧩 Disadvantages
+******************
+➤ Request may go unhandled if chain ends
+➤ Debugging can be difficult due to indirect flow
+➤ Performance overhead if chain is long
+➤ Needs careful ordering of handlers
+
+🧩 Common Interview Questions
+*******************************
+➤ What is Chain of Responsibility?
+➤ How does it reduce coupling?
+➤ Difference between CoR and Decorator?
+➤ Can handler both process and forward the request?
+➤ Real-world examples of CoR?
+➤ How is it implemented in frameworks like Spring/Servlets?
+➤ What happens if no handler processes the request?
+
+🧩 Difference: Chain of Responsibility vs. Decorator
+*******************************************************
+➤ CoR passes request along a chain → only one may handle.
+➤ Decorator adds additional behavior → all decorators execute.
+
+############################
+🧩 Builder Design Pattern 
+############################
+🧩 Definition
+****************
+➤ The Builder Pattern is a Creational Design Pattern used to construct complex objects step-by-step.
+➤ Instead of using a large constructor with many parameters, Builder provides a flexible, readable, and controlled way to create objects.
+
+🧩 Intent (Why Builder Pattern?)
+**********************************
+➤ To avoid telescoping constructors (constructors with too many parameters).
+➤ To create objects with optional or mandatory fields clearly.
+➤ To construct complex objects step-by-step.
+➤ To build immutable objects safely.
+
+🧩 Where Builder is Used in Real Life?
+****************************************
+➤ Creating objects with multiple attributes
+➤ Building immutable classes (e.g., in Lombok @Builder)
+➤ Creating HTTP requests (OKHttp, Retrofit)
+➤ JDBC PreparedStatement building
+➤ Spring MockMvcBuilders
+➤ StringBuilder in Java uses a similar but not exact pattern
+
+🧩 Problem Without Builder (Telescoping Constructor)
+*****************************************************
+public class User {
+    public User(String name, String email, int age, String address, String phone) {
+        // too many params → confusing
+    }
+}
+
+➤ Hard to read
+➤ Hard to maintain
+➤ Error-prone
+
+🧩 Solution: Builder Pattern
+********************************
+🧱 Step-by-Step Object Construction
+=====================================
+➤ Builder allows you to set only the fields you need.
+➤ Gives chained methods (fluent API).
+➤ Final object is built using .build().
+
+🧩 Complete Java Example
+-------------------------
+1️⃣ Class to Build
+public class User {
+    private String name;
+    private String email;
+    private int age;
+    private String address;
+
+    private User(UserBuilder builder) {
+        this.name = builder.name;
+        this.email = builder.email;
+        this.age = builder.age;
+        this.address = builder.address;
+    }
+
+    public static class UserBuilder {
+        private String name;
+        private String email;
+        private int age;
+        private String address;
+
+        public UserBuilder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public UserBuilder setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserBuilder setAge(int age) {
+            this.age = age;
+            return this;
+        }
+
+        public UserBuilder setAddress(String address) {
+            this.address = address;
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
+        }
+    }
+}
+
+2️⃣ Client Code
+User user = new User.UserBuilder()
+                .setName("Deepak")
+                .setEmail("deepak@mail.com")
+                .setAge(22)
+                .build();
+
+
+🧩 How Builder Improves Code
+******************************
+➤ Readable: Field names appear during object creation
+➤ Flexible: Optional fields can be ignored
+➤ Immutable: Object built is final
+➤ Clean API: No messy constructors
+➤ Scalable: Easy to add new fields
+
+🧩 When to Use Builder Pattern?
+*********************************
+➤ When object has more than 4–5 parameters
+➤ When object has optional parameters
+➤ When object construction should be controlled step-by-step
+➤ When creating immutable objects
+➤ When construction logic is complex
+
+🧩 Advantages
+**************
+➤ Avoids telescoping constructors
+➤ Increased readability
+➤ Helps create immutable objects
+➤ Cleaner and maintainable code
+➤ Flexibility in object creation
+
+🧩 Disadvantages
+*******************
+➤ More code due to builder class
+➤ Slightly more memory usage
+➤ More classes to manage
+
+🧩 Builder vs Factory vs Constructor (Interview Favorite)
+*************************************************************
+➤ Constructor:
+➤ Simple, use when parameters < 3
+
+➤ Factory:
+➤ Decides which object to create
+
+➤ Builder:
+➤ Decides how to construct the object step-by-step
+
+🧩 Real-World Examples in Java
+********************************
+➤ StringBuilder, StringBuffer (similar idea)
+➤ java.lang.ProcessBuilder
+➤ Lombok @Builder
+➤ Stream.Builder<T>
+➤ Calendar.Builder
+
+🧩 Common Interview Questions
+*******************************
+➤ What is Builder Pattern?
+➤ Why is it preferred over telescoping constructors?
+➤ Difference between Builder and Factory?
+➤ Can Builder create immutable objects?
+➤ Describe the real-world examples of Builder.
+➤ Is Builder a creational or structural pattern?
+
+#############################
+🧩 Decorator Design Pattern 
+#############################
+🧩 Definition
+***************
+➤ The Decorator Pattern is a Structural Design Pattern used to add new functionalities to an object dynamically, without modifying its original class.
+➤ Decorators wrap an object and add extra behavior before/after delegating calls to the original object.
+
+🧩 Intent (Why Decorator Pattern?)
+************************************
+➤ To extend functionality dynamically at runtime.
+➤ To avoid subclass explosion (too many subclasses for combinations of features).
+➤ To add responsibilities to an object without changing existing code (follows OCP).
+➤ To decorate (wrap) an object with additional features.
+
+🧩 Real-World Examples
+*************************
+➤ Java I/O Streams
+➤ BufferedInputStream wraps FileInputStream
+➤ DataInputStream, BufferedReader, ZipInputStream
+➤ Spring Boot Filters (decorating request/response)
+➤ Adding toppings to pizza (Cheese, Peppers, Olives)
+➤ Text formatting (bold, italic, underline decorators)
+➤ Logging wrappers
+➤ Enhancing service layer with cache/log decorators
+
+🧩 Where to Use Decorator Pattern?
+************************************
+➤ When you want to add new behaviors to objects dynamically
+➤ When subclassing is impractical due to too many combinations
+➤ When you want to follow Open/Closed Principle
+➤ When you want to wrap a class with extra logic
+
+🧩 Key Characteristics (Must Know for Interviews)
+***************************************************
+➤ Uses composition (wrap object) instead of inheritance.
+➤ Decorator HAS the same interface as the original component.
+➤ New behavior can be added before/after delegating calls.
+➤ Multiple decorators can be stacked.
+➤ Helps avoid too many subclasses.
+
+🧩 Structure (UML Overview)
+*****************************
+➤ Component (Interface)
+➤ Base interface for both core objects and decorators
+
+➤ Concrete Component
+➤ Actual object you want to decorate
+
+➤ Decorator (Abstract class)
+➤ Implements Component and has a reference to the wrapped Component
+
+➤ Concrete Decorators
+➤ Add new behavior
+
+➤ Client
+➤ Wraps objects with decorators
+
+🧩 Java Example — Coffee Shop (Classic Decorator Example)
+**********************************************************
+1️⃣ Component Interface
+=========================
+public interface Coffee {
+    String getDescription();
+    double getCost();
+}
+
+2️⃣ Concrete Component
+======================
+public class BasicCoffee implements Coffee {
+    public String getDescription() {
+        return "Basic Coffee";
+    }
+    public double getCost() {
+        return 50;
+    }
+}
+
+3️⃣ Decorator (Abstract)
+=========================
+public abstract class CoffeeDecorator implements Coffee {
+    protected Coffee coffee;
+    public CoffeeDecorator(Coffee coffee) {
+        this.coffee = coffee;
+    }
+}
+
+4️⃣ Concrete Decorators
+========================
+public class MilkDecorator extends CoffeeDecorator {
+    public MilkDecorator(Coffee coffee) {
+        super(coffee);
+    }
+    public String getDescription() {
+        return coffee.getDescription() + ", Milk";
+    }
+    public double getCost() {
+        return coffee.getCost() + 10;
+    }
+}
+
+public class SugarDecorator extends CoffeeDecorator {
+    public SugarDecorator(Coffee coffee) {
+        super(coffee);
+    }
+    public String getDescription() {
+        return coffee.getDescription() + ", Sugar";
+    }
+    public double getCost() {
+        return coffee.getCost() + 5;
+    }
+}
+
+5️⃣ Client Code
+===============
+public class Main {
+    public static void main(String[] args) {
+        Coffee coffee = new BasicCoffee();
+        coffee = new MilkDecorator(coffee);
+        coffee = new SugarDecorator(coffee);
+
+        System.out.println(coffee.getDescription());
+        System.out.println("Cost: " + coffee.getCost());
+    }
+}
+
+Output:
+Basic Coffee, Milk, Sugar
+Cost: 65.0
+
+
+🧩 Advantages
+**************
+➤ Add functionality at runtime
+➤ No need to modify existing code
+➤ Flexible — combine decorators in any order
+➤ Avoids class explosion
+➤ Follows Open/Closed Principle & Single Responsibility Principle
+
+🧩 Disadvantages
+******************
+➤ Many small classes (one per decorator)
+➤ Debugging can be tricky due to multiple wrapping layers
+➤ Order of decorators matters
+➤ Complexity increases if too many decorators are used
+
+🧩 Decorator vs Inheritance (Interview Favorite)
+**************************************************
+➤ Inheritance
+➤ Static behavior
+➤ Compile-time
+➤ Adds functionality to entire class
+
+➤ Decorator
+➤ Dynamic behavior
+➤ Runtime
+➤ Adds functionality to a single object instance
+
+🧩 Decorator vs Chain of Responsibility
+******************************************
+➤ Decorator
+➤ All decorators execute
+➤ Used to enhance (add behavior)
+
+➤ CoR
+➤ Only one handler might handle
+➤ Used to pass request along a chain
+
+🧩 Common Interview Questions
+******************************
+➤ What is Decorator Pattern?
+➤ How is it used in Java I/O?
+➤ Difference between Decorator and Adapter?
+➤ Decorator vs Inheritance?
+➤ Can decorators be nested?
+➤ Real-life example?
+
+############################
+🧩 Adapter Design Pattern 
+############################
+🧩 Definition
+****************
+➤ The Adapter Pattern is a Structural Design Pattern that allows two incompatible interfaces to work together.
+➤ It acts as a bridge between an existing class and a client that expects a different interface.
+
+➤ In simple words:
+Adapter converts one interface into another interface expected by the client.
+
+🧩 Intent (Why Adapter Pattern?)
+***********************************
+➤ To reuse old/existing code with a new system without modifying it.
+➤ To allow incompatible classes to communicate.
+➤ To wrap a class with a different interface that the client understands.
+➤ To follow Open/Closed Principle — extend behavior without modifying existing code.
+
+🧩 Real-World Examples
+***********************
+➤ Mobile charger adapter — Converts 220V to 5V
+➤ Card reader — SD card to USB
+➤ HDMI-to-VGA converter
+➤ Java Collections API
+➤ Arrays.asList() → Adapts array to List
+➤ Spring Web
+➤ HandlerAdapter allows controllers of different types to work
+➤ Legacy system integration
+
+🧩 When to Use Adapter Pattern?
+**********************************
+➤ When you want to use an existing class but its interface does not match your requirements.
+➤ When you want to integrate new code with a legacy system.
+➤ When you need to convert data formats or APIs.
+➤ When you follow the “don’t modify existing code” principle.
+
+🧩 Types of Adapter
+*********************
+➤ Object Adapter (Most common)
+➤ Uses composition
+➤ Adapter contains the adaptee object
+
+➤ Class Adapter
+➤ Uses inheritance
+➤ Adapter inherits from Adaptee (not common in Java because Java doesn’t support multiple inheritance)
+
+🧩 Structure (UML Essentials)
+*******************************
+➤ Target Interface → What client expects
+➤ Adaptee → Class with incompatible interface
+➤ Adapter → Converts the request to the Adaptee’s format
+➤ Client → Uses Target interface
+
+🧩 Java Example — Adapter Pattern (Mobile Charger Analogy)
+*************************************************************
+1️⃣ Target Interface (What client expects)
+===========================================
+public interface Charger {
+    void chargePhone();
+}
+
+2️⃣ Adaptee (Existing incompatible class)
+==========================================
+public class HomeSocket {
+    public void provideElectricity() {
+        System.out.println("Providing 240V electricity");
+    }
+}
+
+3️⃣ Adapter (Converts 240V → 5V)
+================================
+public class ChargerAdapter implements Charger {
+    private HomeSocket socket;
+
+    public ChargerAdapter(HomeSocket socket) {
+        this.socket = socket;
+    }
+
+    @Override
+    public void chargePhone() {
+        System.out.println("Adapter converting 240V to 5V...");
+        socket.provideElectricity();
+        System.out.println("Phone is charging safely");
+    }
+}
+
+4️⃣ Client Code
+===============
+public class Main {
+    public static void main(String[] args) {
+        HomeSocket socket = new HomeSocket();
+        Charger charger = new ChargerAdapter(socket);
+        charger.chargePhone();
+    }
+}
+
+Output
+Adapter converting 240V to 5V...
+Providing 240V electricity
+Phone is charging safely
+
+🧩 Advantages
+****************
+➤ Reuse existing code without modifying it
+➤ Improves reusability
+➤ Increases compatibility between old and new code
+➤ Supports Open/Closed Principle
+➤ Flexible — you can wrap many adapters around the same adaptee
+
+🧩 Disadvantages
+******************
+➤ Adds extra layer — may increase complexity
+➤ Too many adapters can make the system hard to understand
+➤ Not suitable if you can modify the existing class — in that case, refactoring is simpler
+
+🧩 Adapter vs Decorator vs Proxy
+************************************
+➤ Adapter → Converts interface
+➤ Decorator → Adds new behavior
+➤ Proxy → Controls access (security, lazy load, logging)
+
+🧩 Real Java Examples
+***********************
+➤ Arrays.asList()
+➤ InputStreamReader(InputStream)
+➤ ResourceAdapter in Spring
+➤ JDBC driver wrappers
+➤ Log4j to SLF4J bridges
+
+🧩 Common Interview Questions
+********************************
+➤ What is Adapter Pattern?
+➤ Difference between Class Adapter and Object Adapter?
+➤ How is Adapter used in Java I/O?
+➤ Adapter vs Decorator vs Proxy?
+➤ Give real-time example of Adapter in your project.
+➤ How does Adapter follow OCP?
+
+############################
+🧩 Iterator Design Pattern
+############################
+➤ Definition
+**************
+The Iterator pattern provides a standard way to sequentially access elements of a collection without exposing its internal structure.
+
+🧩 Key Points
+****************
+➤ Type: Behavioral Pattern
+➤ Focus: Traverse collections (List, Set, Trees, Custom collections) in a uniform way
+➤ Goal: Hide the complexity/structure of the underlying data representation
+
+🧩 Intent
+***********
+➤ Provide a common interface to iterate over a collection.
+➤ Allow multiple types of iteration (forward, backward, custom traversal).
+➤ Decouple traversal logic from collection class.
+
+🧩 Where It Is Used in Java
+******************************
+➤ Java’s Iterator, ListIterator, Iterable interfaces.
+➤ Enhanced for-loop (for (int x : list)) internally uses Iterator.
+➤ Collection classes (ArrayList, HashSet, LinkedList) all use it.
+
+🧩 Structure (Conceptual)
+***************************
+➤ Iterator
+ ➤ Provides operations like hasNext() and next()
+➤ ConcreteIterator
+ ➤ Implements iteration over a specific collection
+➤ Aggregate / Iterable
+ ➤ Creates an iterator
+➤ ConcreteAggregate
+ ➤ Returns an iterator for the collection
+
+🧩 Simple Java Example
+*************************
+Collection (Aggregate)
+interface Container {
+    Iterator getIterator();
+}
+
+Iterator Interface
+interface Iterator {
+    boolean hasNext();
+    Object next();
+}
+
+Concrete Collection
+class NameRepository implements Container {
+    private String[] names = { "John", "David", "Sara" };
+
+    @Override
+    public Iterator getIterator() {
+        return new NameIterator();
+    }
+
+    private class NameIterator implements Iterator {
+        int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < names.length;
+        }
+
+        @Override
+        public Object next() {
+            return hasNext() ? names[index++] : null;
+        }
+    }
+}
+
+Usage
+NameRepository repo = new NameRepository();
+Iterator it = repo.getIterator();
+
+while (it.hasNext()) {
+    System.out.println(it.next());
+}
+
+🧩 Real-World Examples
+************************
+➤ TV remote channels — press next/previous without knowing stored channel list
+➤ Music playlist — iterate songs sequentially
+➤ Browser history — go forward/backward
+
+🧩 Advantages
+****************
+➤ Uniform traversal across different collections
+➤ Encapsulation — hides internal structure
+➤ Multiple iteration algorithms possible
+➤ Supports parallel or custom iterators
+
+🧩 Disadvantages
+*******************
+➤ Extra classes (Iterator, ConcreteIterator) increase complexity
+➤ Multiple iterators on the same collection may cause concurrency issues
+
+🧩 When to Use
+***************
+➤ You want to iterate without exposing internal data structure.
+➤ You want to support multiple traversal types (reverse, filtered, custom).
+➤ You want clean separation between collection and traversal logic.
+
+🧩 Interview Questions
+************************
+➤ Why do we need Iterator when we have simple loops?
+➤ Difference between Iterator and ListIterator?
+➤ Why is Iterator.remove() preferred over modifying during iteration?
+➤ Fail-fast vs Fail-safe iterator in Java?
+➤ Internal working of foreach loop in Java?
