@@ -1203,3 +1203,268 @@ public class Main {
 ➤ Which design principle does it follow?
 👉 Follows Open-Closed Principle
 👉 Follows Loose Coupling Principle
+
+###################################
+🧩 Template Method Design Pattern
+###################################
+➤ Definition:
+***************
+The Template Method is a behavioral design pattern that defines the skeleton (template) of an algorithm in a base class and allows subclasses to override specific steps of the algorithm without changing its structure.
+
+➤ Simple Meaning:
+==================
+Parent class = defines steps
+Child class = customizes only required steps
+Algorithm flow = fixed + controlled
+
+🧩 Intent / Purpose
+*********************
+➤ Define the fixed flow of an operation once, while allowing subclasses to redefine certain steps.
+➤ Promote code reuse and avoid duplicate algorithm structure.
+➤ Enforce a consistent algorithm template.
+
+🧩 Key Characteristics
+************************
+➤ Algorithm structure is fixed and cannot be changed by subclasses.
+➤ Subclasses customize steps via abstract or hook methods.
+➤ Follows Hollywood Principle — “Don’t call us, we’ll call you.”
+➤ Defines a template method (final) in the parent class.
+
+🧩 Structure (UML-like)
+*************************
+AbstractClass
+   ├── templateMethod()  → final (algorithm steps)
+   ├── step1() → abstract
+   ├── step2() → abstract
+   └── hook()  → optional override
+
+ConcreteClassA / ConcreteClassB
+   ├── implement step1()
+   └── implement step2()
+
+🧩 Real-Life Analogy
+**********************
+Making Tea vs Coffee
+➤ Boil water (same)
+➤ Add ingredients (different)
+➤ Pour and serve (same)
+
+The skeleton stays the same, but specific steps differ.
+
+🧩 Java Example (Interview-Ready)
+************************************
+Step 1: Create Template 
+-------------------------
+abstract class DataProcessor {
+
+    // Template method (the algorithm)
+    public final void process() {
+        readData();
+        processData();
+        saveData();
+        hook();        // optional customization
+    }
+
+    abstract void readData();
+    abstract void processData();
+
+    void saveData() {
+        System.out.println("Saving processed data...");
+    }
+
+    // Hook method – optional
+    void hook() {}
+}
+
+Step 2: Concrete Classes
+-------------------------
+class CSVDataProcessor extends DataProcessor {
+
+    void readData() {
+        System.out.println("Reading CSV data");
+    }
+
+    void processData() {
+        System.out.println("Processing CSV data");
+    }
+}
+
+class JSONDataProcessor extends DataProcessor {
+
+    void readData() {
+        System.out.println("Reading JSON data");
+    }
+
+    void processData() {
+        System.out.println("Processing JSON data");
+    }
+
+    // Optional hook override
+    void hook() {
+        System.out.println("Validating JSON data");
+    }
+}
+
+Step 3: Client 
+----------------
+public class Main {
+    public static void main(String[] args) {
+        DataProcessor processor = new CSVDataProcessor();
+        processor.process();
+
+        processor = new JSONDataProcessor();
+        processor.process();
+    }
+}
+
+🧩 When to Use Template Method
+*********************************
+➤ When multiple classes share the same algorithm structure.
+➤ When certain steps should be customizable, but the sequence must remain the same.
+➤ When you want to avoid duplicate code for algorithm flow.
+➤ When you want to have hooks for optional behavior.
+
+🧩 Advantages
+***************
+➤ Promotes code reuse and clean architecture.
+➤ Reduces duplicate logic.
+➤ Ensures algorithm consistency across implementations.
+➤ Extensible — child classes customize only required steps.
+
+🧩 Disadvantages
+*******************
+➤ More subclasses = more complexity.
+➤ Changes in base algorithm affect all subclasses.
+➤ Increases tight coupling between base class and subclasses.
+
+🧩 Key Interview Questions
+*****************************
+➤ What is the Template Method pattern?
+➤ Why is the template method declared final?
+➤ What are hook methods?
+➤ Difference between template method and strategy pattern?
+➤ Real-world example in Java libraries?
+
+🧩 Real Examples in Java
+***************************
+➤ java.io.InputStream, java.io.OutputStream → read(), write() methods.
+➤ javax.servlet.http.HttpServlet → doGet(), doPost() methods.
+➤ Spring Framework uses templates (e.g., JdbcTemplate, RestTemplate).
+
+##############################
+🧩 Prototype Design Pattern 
+##############################
+The Prototype Pattern is a creational design pattern used when creating objects is costly, heavy, or complex, and you want to clone existing objects instead of creating new ones from scratch.
+
+🧩 Definition
+***************
+➤ Prototype pattern allows you to create new objects by copying (cloning) existing objects.
+➤ Instead of instantiating new objects using new, you clone a prototype, which acts as a template.
+
+🧩 Why Do We Need It?
+***********************
+➤ When creating an object is:
+
+👉 Expensive (e.g., connecting to DB, loading a file)
+
+👉 Complicated (many steps/configurations)
+
+👉 Time-consuming (e.g., parsing XML/JSON every time)
+
+➤ Cloning avoids that overhead by copying an already prepared object.
+
+🧩 Real-Life Analogy
+***********************
+➤ Think of a notary stamping documents.
+Instead of writing a fresh document every time, the notary keeps a master copy and makes xerox copies (clones) whenever someone needs one.
+
+🧩 Structure
+***************
+➤ Prototype interface → declares the clone() method
+➤ Concrete Prototype → class that implements cloning
+➤ Client → asks for a clone instead of creating a new object
+
+🧩 Types of Cloning
+➤ Shallow Copy
+
+👉 Copies only object references
+👉 Nested objects are shared
+
+➤ Deep Copy
+
+👉 Copies everything
+👉 Nested objects are also duplicated
+
+🧩 Java Example (Simple & Easy)
+**********************************
+🔹 Step 1: Create Prototype Interface
+-----------------------------------------
+public interface Prototype {
+    Prototype clone();
+}
+
+🔹 Step 2: Concrete Prototype Class
+-------------------------------------
+public class Employee implements Prototype {
+    private String name;
+    private String department;
+
+    public Employee(String name, String department) {
+        this.name = name;
+        this.department = department;
+    }
+
+    @Override
+    public Prototype clone() {
+        return new Employee(name, department);   // deep copy
+    }
+
+    @Override
+    public String toString() {
+        return name + " - " + department;
+    }
+}
+
+🔹 Step 3: Client
+-------------------
+public class Main {
+    public static void main(String[] args) {
+        Employee emp1 = new Employee("Deepak", "Backend");
+        
+        Employee emp2 = (Employee) emp1.clone(); // cloning
+
+        System.out.println(emp1);
+        System.out.println(emp2);
+    }
+}
+
+🧩 When to Use Prototype Pattern?
+************************************
+➤ When object creation is expensive or slow
+➤ When the system should be independent of the object creation logic
+➤ When you want to avoid subclassing just to create multiple object configurations
+➤ When you need multiple similar objects quickly
+
+🧩 Advantages
+****************
+➤ Fast object creation
+➤ Avoids repetitive complex construction
+➤ Reduces memory usage
+➤ Less boilerplate than Factory/Builder in some cases
+
+🧩 Disadvantages
+******************
+➤ Deep cloning can be complex
+➤ You must handle circular references
+➤ Not suitable if the object contains external resources (e.g., DB connections)
+
+🧩 Interview-Ready Points
+***************************
+➤ Prototype pattern clones existing objects, reducing object creation cost
+➤ Uses clone() method
+➤ Supports shallow and deep copying
+➤ Used when objects have complex initialization
+➤ Common in:
+👉 Game engines (cloning characters)
+👉 Document editors (copy/paste)
+👉 Frameworks requiring fast duplication

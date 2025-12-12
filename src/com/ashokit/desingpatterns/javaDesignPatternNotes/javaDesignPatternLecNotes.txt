@@ -904,3 +904,38 @@ class Account {
 ➤ On the other hand the abstract factory pattern provides an interface for creating families of related objects without specifying their concrete classes. The client code uses the abstract factory interface to create objects but also needs to know which family of related objects it wants to create.
 
 ➤ The abstract factory pattern is best suited for scenarios where a system need to be independent of how its products are created composed and represented. It provides and interface for creating families of related products without specifying their concrete classes, which makes it easier to change the type of product families being used by the system . In summary the factory pattern is suitable when a system need to create obejcts of a single type while the abstract factory pattern is suitable when a system need to create families of related objects.
+
+##########################
+❄️ Facade Design Pattern 
+##########################
+➤ The facade pattern is appropriate when we have a complex system that we want to expose to clients in a simplified way. Its purpose is to hide internal complexity behind a single interface that appears simple from the outside 
+➤ The interface JDBC can be called a facade because we as users or clients create connection using the java.sql.Connection interface the implementation of which we are not concerned about. The implementation is left to the vendor of driver.  
+➤ We must have connected to database to fetch some data. We simply call the method dataSource.getConnection() to get the connection but internally a lot of things happen such as loading the driver creating connection from  pool update stats and then return the connection reference to caller method. It is another example of facade pattern in the programming world. 
+➤ Developers often use the facade design pattern when a system is very complex or difficult to understand because the system has many interdependent classesor because its source code is unavailable . This pattern hides the complexities of the larger system and provides a simpler interface to the client
+
+🌟 Factory Pattern
+*******************
+➤ The factory completely abstracts the creation and initialization of the product from the client 
+➤ This indirection enables the client to focus on its discrete role in the application without concerning itself with the details of how the product is created . Thus, as the product implementation changes over time the client remains unchanged 
+
+CLIENT ---------> FACTORY ----------> PRODUCT 
+
+🌟 Facade Pattern 
+*******************
+➤ Encapsulate the subsytem using a high level interface/provides a simplified and uniform interface to a large subsystem of classes 
+➤ The client communicates with the facade which has methods to interact with subsystems. The client very rarely accesses objects in the subsystems. 
+➤ Subsystems objects usually retain no knowledge of the client.
+➤ Subsystem objects do not normally maintain any refrence to facade 
+
+CLIENT --------------> FACADE -----------------> SUBSYSTEMS.
+
+##########################
+❄️ Proxy Design Pattern 
+##########################
+➤ A Proxy object hides the original object and control access to it . We can use proxy when we may want to use a class that can perform as an interface to something else.
+➤ Proxy is heavily used to implement lazy loading related usecases where we do not want to create full object until it is actually needed.
+➤ A proxy can be used to add an addtional security layer around the original object as well.
+
+➤ Intrinsic and extrinsic are two terms used in the context of the Proxy design pattern 
+➤ Intrinsic means that the behaviour is part of the object itself In the context of the proxy pattern intrinsic behaviour refers to the behaviour that is implemented by the proxy itself. 
+➤ Extrinsic means that the behaviour is not part of the object iteself but is instead provided by an external entity . In the context of the proxy pattern extrinsic behaviour refers to the behaviour that is provided by the real subject. 
