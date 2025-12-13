@@ -1468,3 +1468,251 @@ public class Main {
 👉 Game engines (cloning characters)
 👉 Document editors (copy/paste)
 👉 Frameworks requiring fast duplication
+
+####################################
+🧩 Abstract Factory Design Pattern
+####################################
+🧩 What is the Abstract Factory Pattern?
+******************************************
+➤ The Abstract Factory Pattern is a creational design pattern that provides an interface to create families of related objects without specifying their concrete classes.
+➤ It is basically a factory of factories — each factory creates related objects.
+
+🧩 Why Do We Use It?
+**********************
+➤ When your system needs to create a set of related objects.
+➤ When you want consistency among products (e.g., UI themes, OS-specific components).
+➤ When you want to decouple object creation from usage.
+
+🧩 Real-Life Analogy
+*********************
+➤ Think of a Furniture Store that sells:
+    👉 Modern Chair, Modern Sofa
+    👉 Victorian Chair, Victorian Sofa
+➤ You first choose the factory (Modern Factory / Victorian Factory), and then you get related products.
+➤ Each factory produces a family of consistent products.
+
+🧩 Structure
+***************
+➤ AbstractFactory → Interface with methods to create product families.
+➤ ConcreteFactory → Implements object creation.
+➤ AbstractProduct → Interface for product.
+➤ ConcreteProduct → Actual implementation.
+➤ Client → Uses the factory but never knows the actual classes.
+
+🧩 Code Example (Java)
+************************
+🎯 Goal: Create UI based on OS (Windows or Mac)
+=================================================
+// Abstract Product A
+interface Button {
+    void click();
+}
+
+// Abstract Product B
+interface Checkbox {
+    void check();
+}
+
+// Concrete Product A1
+class WindowsButton implements Button {
+    public void click() {
+        System.out.println("Windows Button Clicked");
+    }
+}
+
+// Concrete Product A2
+class MacButton implements Button {
+    public void click() {
+        System.out.println("Mac Button Clicked");
+    }
+}
+
+// Concrete Product B1
+class WindowsCheckbox implements Checkbox {
+    public void check() {
+        System.out.println("Windows Checkbox Checked");
+    }
+}
+
+// Concrete Product B2
+class MacCheckbox implements Checkbox {
+    public void check() {
+        System.out.println("Mac Checkbox Checked");
+    }
+}
+
+// Abstract Factory
+interface GUIFactory {
+    Button createButton();
+    Checkbox createCheckbox();
+}
+
+// Concrete Factory 1
+class WindowsFactory implements GUIFactory {
+    public Button createButton() {
+        return new WindowsButton();
+    }
+    public Checkbox createCheckbox() {
+        return new WindowsCheckbox();
+    }
+}
+
+// Concrete Factory 2
+class MacFactory implements GUIFactory {
+    public Button createButton() {
+        return new MacButton();
+    }
+    public Checkbox createCheckbox() {
+        return new MacCheckbox();
+    }
+}
+
+// Client
+class Application {
+    private Button button;
+    private Checkbox checkbox;
+
+    public Application(GUIFactory factory) {
+        button = factory.createButton();
+        checkbox = factory.createCheckbox();
+    }
+
+    public void render() {
+        button.click();
+        checkbox.check();
+    }
+}
+
+// Test
+public class Main {
+    public static void main(String[] args) {
+        GUIFactory factory = new WindowsFactory(); // or MacFactory()
+        Application app = new Application(factory);
+        app.render();
+    }
+}
+
+🧩 Advantages
+****************
+➤ Ensures compatibility among created objects.
+➤ Code becomes more flexible and decoupled.
+➤ Makes adding new product families easy.
+
+🧩 Disadvantages
+*****************
+➤ Adding new products (e.g., adding Slider component) requires modifying all factories.
+➤ Increases number of classes.
+
+🧩 When to Use Abstract Factory?
+*********************************
+➤ When products are created in groups/families.
+➤ When system must not depend on product concrete classes.
+➤ When you need runtime selection of the product family.
+
+##########################
+🧩 Facade Design Pattern
+##########################
+The Facade Pattern is a structural design pattern that provides a simple, unified interface to a complex subsystem.
+It hides complexity and exposes only what is necessary.
+
+📝 Definition
+***************
+➤ Facade pattern wraps complex libraries, frameworks, or multiple classes behind a single class
+➤ That single class becomes a gateway for the client
+➤ Client does not need to know the internals — only calls simple methods
+
+🎯 Why Use Facade Pattern?
+*****************************
+➤ To reduce complexity when working with multiple dependent classes
+➤ To improve readability & maintainability
+➤ To decouple the client from the complex subsystem
+➤ To avoid exposing unnecessary internal logic
+
+🎮 Real-Life Analogy (Very Easy)
+***********************************
+👉 TV Remote
+==============
+Without a remote, you must manually operate TV, Set-top box, Home theatre, DVD Player, etc.
+Remote provides only simple buttons → ON, OFF, Volume, Channel
+
+It hides all complex circuits.
+
+🔧 Example (Simple Java Code)
+******************************
+🎬 Subsystem classes (complex system)
+---------------------------------------
+class AudioSystem {
+    void on() { System.out.println("Audio ON"); }
+    void off() { System.out.println("Audio OFF"); }
+}
+
+class Projector {
+    void on() { System.out.println("Projector ON"); }
+    void off() { System.out.println("Projector OFF"); }
+}
+
+class Screen {
+    void down() { System.out.println("Screen Down"); }
+    void up() { System.out.println("Screen Up"); }
+}
+
+🎯 Facade class
+------------------
+class HomeTheatreFacade {
+
+    private AudioSystem audio;
+    private Projector projector;
+    private Screen screen;
+
+    public HomeTheatreFacade(AudioSystem audio, Projector projector, Screen screen) {
+        this.audio = audio;
+        this.projector = projector;
+        this.screen = screen;
+    }
+
+    public void watchMovie() {
+        screen.down();
+        projector.on();
+        audio.on();
+        System.out.println("Movie Started!");
+    }
+
+    public void endMovie() {
+        audio.off();
+        projector.off();
+        screen.up();
+        System.out.println("Movie Ended!");
+    }
+}
+
+🎮 Client (simple interaction)
+--------------------------------
+class Main {
+    public static void main(String[] args) {
+        HomeTheatreFacade theatre = new HomeTheatreFacade(
+            new AudioSystem(),
+            new Projector(),
+            new Screen()
+        );
+
+        theatre.watchMovie();
+        theatre.endMovie();
+    }
+}
+
+💡 When to Use?
+*****************
+➤ When you want to hide complex logic behind simple APIs
+➤ When working with third-party libraries
+➤ When dealing with legacy systems
+➤ When client should be independent of subsystem complexities
+
+🧠 Key Interview Points
+************************
+➤ Facade simplifies API by providing a single entry point
+➤ It does not restrict access — subsystem classes are still accessible
+➤ It reduces coupling between client and subsystem
+➤ It is different from Adapter —
+👉 Adapter changes interface
+👉 Facade simplifies interface
+➤ Mostly used in frameworks (Spring, Hibernate)

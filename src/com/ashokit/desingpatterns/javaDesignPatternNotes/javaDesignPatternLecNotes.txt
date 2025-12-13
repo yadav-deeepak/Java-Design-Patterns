@@ -938,4 +938,121 @@ CLIENT --------------> FACADE -----------------> SUBSYSTEMS.
 
 ➤ Intrinsic and extrinsic are two terms used in the context of the Proxy design pattern 
 ➤ Intrinsic means that the behaviour is part of the object itself In the context of the proxy pattern intrinsic behaviour refers to the behaviour that is implemented by the proxy itself. 
-➤ Extrinsic means that the behaviour is not part of the object iteself but is instead provided by an external entity . In the context of the proxy pattern extrinsic behaviour refers to the behaviour that is provided by the real subject. 
+➤ Extrinsic means that the behaviour is not part of the object iteself but is instead provided by an external entity . In the context of the proxy pattern extrinsic behaviour refers to the behaviour that is provided by the real subject.
+
+#############################
+❄️ Momento Design Pattern 
+#############################
+➤ The momento pattern could be suitable for a feedback application. For example you could use the momento pattern to save the stateof the feedback form before and after the user submits the feedback. This would allow the user to review and edit their feedback before submitting it and also provide an undo option in case they change their mind.
+➤ It is a behavioural design pattern that lets you save and restore the previous state of an object without revealing the details of its implementation 
+➤ There are three important classes(Orignator, Memento and Caretaker) involved in the momento design pattern 
+➤ The originator class has two methods. One is CreateMemento and the other one is setMemento. The setMemento method accepts the memento object. So what this originator class will do is , it will instantiate the memento object and set the internal state of the originator to memento state. So, basically what the originator will do is it will take a snapshot of the originator and put it on the memento object. And that memento object will save into the Caretaker for later use. 
+➤ Later use means, suppose at a later point of time originator wants to restore its state then at that time it will take the old state from the caretaker and set it in the originator state so that the originator can restore its old state.
+
+➤ This can be used in any feedback form
+
+Example: 
+---------
+package com.ashokit.desingpatterns.mementodesignpattern;
+
+public class MementoDesignPatternExample {
+
+	public static void main(String[] args) {
+		FeedbackForm form = new FeedbackForm("Kartik","karthik.abc@gmail.com","Food is good");
+		FeedbackCaretaker careTaker = new FeedbackCaretaker();
+		careTaker.saveState(form);
+		
+		form.setName("ABC");
+		form.setEmail("abc@gmail.com");
+		form.setComment("Form is filled");
+		
+		careTaker.restoreState(form);
+	}
+}
+
+class FeedbackForm{ //originator 
+	private String name;
+	private String email;
+	private String comment;
+	public FeedbackForm(String name, String email, String comment) {
+		this.name = name;
+		this.email = email;
+		this.comment = comment;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getComment() {
+		return comment;
+	}
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+	 
+	FeedbackMemento save(FeedbackForm form){
+		FeedbackMemento memento = new FeedbackMemento(form.getName(), form.getEmail(), form.getComment());
+		return memento;
+	}
+	
+	void restore(FeedbackMemento form) {
+		this.name = form.getName();
+		this.email = form.getEmail();
+		this.comment = form.getComment();
+		System.out.println("Name is "+name+" email id is "+email+" comment is "+comment);
+	}
+}
+
+class FeedbackMemento{ //Memento 
+	private String name;
+	private String email;
+	private String comment;
+	public FeedbackMemento(String name, String email, String comment) {
+		this.name = name;
+		this.email = email;
+		this.comment = comment;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getComment() {
+		return comment;
+	}
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+}
+
+class FeedbackCaretaker{
+	FeedbackMemento memento; 
+	
+	public void saveState(FeedbackForm form) {
+		 memento = form.save(form);
+	}
+	
+	public void restoreState(FeedbackForm form) {
+		form.restore(memento);
+	}
+}
+
+###########################
+❄️ Bridge Design Pattern 
+###########################
+➤ The bridge design pattern is a structural design pattern that decouples an abstraction from its implementation so that both can vary independently . In other words it separates the interface from its implementation so that they can be modified without affecting each other.
