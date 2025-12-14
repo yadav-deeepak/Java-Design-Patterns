@@ -1056,3 +1056,27 @@ class FeedbackCaretaker{
 ❄️ Bridge Design Pattern 
 ###########################
 ➤ The bridge design pattern is a structural design pattern that decouples an abstraction from its implementation so that both can vary independently . In other words it separates the interface from its implementation so that they can be modified without affecting each other.
+➤ How is it different from adapter ? 
+=> Adapter  make two interfaces compatible to work and it can be used for the existing projects where as bridge should be used for the new projects.
+
+#########################
+❄️ State Design Pattern 
+#########################
+➤ The state design pattern is a behavioural pattern that allows an object to change its behaviour when its internal state changes . The pattern allows an object to change its behaviour by delegating to an object representing the current state. The state object is responsible for changing the behaviour of the original object, based on its current state.
+➤ Means whenever you are changing the internal behaviour then objects state will be changed.
+
+###########################
+❄️ Command Design Pattern 
+###########################
+➤ The command pattern is a behavioural design pattern in which an object is used to encapsulate all information needed to perform an action or trigger an event at a later time . The information includes the method name the object that owns the method and values for the method parameters. 
+➤ Four terms always associated with the command pattern are command ,receiver, inovker and client 
+➤ In the command design pattern there's a command object that sits between the sender and the receiver objects 
+➤ The sender object can create a command object. The command object then calls the exposed method in the receiver. And so the sender object doesn't need to know about the receiver and its exposed methods.
+➤ We also have another object known as invoker . An invoker is an object responsible for invoking the appropriate command objects to complete a task. 
+
+➤ It is a behavioral pattern in software engineering that encapsulates a request or command as an object, allowing it to be parameterized with different requests, queued, logged or even undone. This pattern allows for the separation of concerns between the client that sends the request and the receiver that executes it.It also supports the addition of new commands without changing the client code or the receiver code. 
+The command pattern involves the following components: 
+➤ Command: This is an interface or abstract class that defines the common methods that all concrete commands must implement. 
+➤ Concrete command: These are concrete classes that implement the command interface and provide an implementation for the execute method. Each concrete command encapsulates a specific action that the receiver can perform 
+➤ Receiver: This is the object that performs the actual action when a command is executed. It  defines the operations that can be performed and is responsible for implementing the methods called by the concrete commands 
+➤ Invoker: This is the object that is responsible for initiating a request or command. It holds a reference to the command object and invokes its execute method when the request needs to be processed. 
