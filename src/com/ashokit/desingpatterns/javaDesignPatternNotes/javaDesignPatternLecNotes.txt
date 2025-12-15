@@ -1080,3 +1080,37 @@ The command pattern involves the following components:
 ➤ Concrete command: These are concrete classes that implement the command interface and provide an implementation for the execute method. Each concrete command encapsulates a specific action that the receiver can perform 
 ➤ Receiver: This is the object that performs the actual action when a command is executed. It  defines the operations that can be performed and is responsible for implementing the methods called by the concrete commands 
 ➤ Invoker: This is the object that is responsible for initiating a request or command. It holds a reference to the command object and invokes its execute method when the request needs to be processed. 
+➤ Client: This is the object that creates the command objects and sets their receiver, if necessary. It is also responsible for creating and managing the invoker object 
+
+➤ The command pattern provides a way to decouple the sender of a request from the object that performs the action. This makes it easier to add new commands or modify the behaviour of existing ones without affecting other parts of the system . It also provides a way to implement undo or redo functionality, as well as support for logging or queuing requests.
+
+#############################
+❄️ Composite Design Pattern 
+#############################
+➤ The composite pattern describes a group of objects that are treated the same way as a single instance of the same type of object. The intent of a composite is to compare objects into tree structures to represent part whole hierarchies. Implementing the composite pattern lets clients treat individual objects and compositions uniformly 
+➤ The composite design pattern allows us to arrange objects into tree structure to represent part whole hierarchies. It allows client to treat individual objects as well as collection of objects in similar manner. For client the interface to interact with individual objects and composites remains the same client doesnt require differnet code for handling individual or collection of objects. 
+➤ Composite pattern comes under structural design pattern as it provide one of the best ways to arrange similar objects in hierarichal order. A composite object may contains a collection object where each object itself can be composite 
+
+🌟 Advantages of Composite Pattern 
+************************************
+➤ It provides a hierarichal tree structure to represent composite and individual objects 
+➤ It allows clients treat individual objects and compositions of objects uniformly 
+➤ We can change the structure of tree any time by calling methods of composite objects like addNode , removeNodes etc. 
+
+##############################
+❄️ Fly weight Design Pattern 
+##############################
+➤ The main intent of flyweight design pattern is "Facilitates the reuse of many fine grained objects and makes the use of large number of objects more efficient". In other words the flyweight pattern explains how objects can be distributed so that they can be used without restrictive costs in fine granules. In software development each "Flyweight" object is categorized into two parts: the extrinsic state - dependent part and the intrinsic state - independent part . So the intrinsic state of the flyweight object is shared whereas extrinsic state is stored or computed by user objects and invoked to the flyweight object. 
+
+➤ The flyweight object essentially has two different kind of attributes: 
+=> Intrinsic: An intrinsic(invariant) state attribute is stored and shared in the flyweight object. It is independent of flyweight's context. So as the best practice we should make intrinsic states immutable. 
+=> Extrinsic: An extrinsic(variant) state attribute does not store and share in the flyweight object because it depends on flyweight's context and varies as the context change. Generally we store and maintain the extrinsic state in the client objects. We need to pass the extrinsic state to the flyweight object for object creation and processing.
+
+👉 Why do we care for number of objects in our program? 
+➤ Less number of objects reduces the memory usage, and it manages to keep us away from errors related to memory like java.lang.OutOfMemoryError. 
+➤ Although creating an object in java is really fast ,we can still reduce the execution time of our program by sharing objects 
+
+🌟 Differnce between singleton and flyweight pattern 
+******************************************************
+➤ The singleton pattern helps us maintain only one object in the system. In other words once the requried object is created we cant create more. We need to reuse the existing object in all parts of the application. 
+➤ The flyweight pattern is used when we have to create large number of similar objects which are different based on client provided extrinsic attribute. 

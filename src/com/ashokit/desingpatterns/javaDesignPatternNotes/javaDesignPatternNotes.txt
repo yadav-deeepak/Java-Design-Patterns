@@ -1716,3 +1716,449 @@ class Main {
 👉 Adapter changes interface
 👉 Facade simplifies interface
 ➤ Mostly used in frameworks (Spring, Hibernate)
+
+#########################
+🧩 Proxy Design Pattern
+#########################
+🎯 Definition
+**************
+➤ The Proxy Pattern provides a surrogate/placeholder object for another object to control access, add extra functionality, or delay expensive operations without modifying the real object.
+
+⭐ Why Proxy?
+***************
+➤ Sometimes the real object is
+👉 heavy,
+👉 slow to create,
+👉 remote,
+👉 sensitive (needs security),
+👉 or needs logging/caching.
+
+➡ In such cases, a Proxy stands in front and manages access.
+
+🧩 How It Works
+*****************
+➤ Subject Interface
+👉 Common interface implemented by both Real Object & Proxy.
+
+➤ Real Subject
+👉 The actual business object.
+
+➤ Proxy
+👉 Controls access to Real Subject
+👉 Adds extra logic: caching, logging, security checks, lazy loading, etc.
+
+🧩 Real-World Examples
+************************
+✔ ATM Card → Proxy for Bank Account
+
+➤ You don't directly access your bank account
+➤ ATM card acts like a proxy adding
+👉 Security
+👉 Validation
+👉 Access control
+
+✔ YouTube Video Thumbnail → Proxy
+
+➤ Actual video is large → expensive to load
+➤ Thumbnail loads instantly → virtual proxy
+
+✔ Internet Firewall → Protection Proxy
+
+👉 Controls which sites you can access
+
+🧩 Types of Proxy
+*******************
+➤ 1. Virtual Proxy
+=====================
+👉 Used for expensive objects (e.g., load an image only when needed).
+
+➤ 2. Protection Proxy
+=======================
+👉 Controls access based on permissions/security.
+
+➤ 3. Remote Proxy
+==================
+👉 Represents an object located on another JVM/server (RMI, microservices).
+
+➤ 4. Smart Proxy
+==================
+👉 Adds extra behavior like logging, caching, reference counting.
+
+🧩 Code Example (Java)
+************************
+➡ Virtual Proxy Example — Loading heavy image
+===============================================
+1. Subject Interface
+---------------------
+public interface Image {
+    void display();
+}
+
+2. Real Subject
+-----------------
+public class RealImage implements Image {
+    private String fileName;
+
+    public RealImage(String fileName) {
+        this.fileName = fileName;
+        loadFromDisk(); 
+    }
+
+    private void loadFromDisk() {
+        System.out.println("Loading " + fileName);
+    }
+
+    @Override
+    public void display() {
+        System.out.println("Displaying " + fileName);
+    }
+}
+
+3. Proxy Class
+---------------
+public class ProxyImage implements Image {
+    private RealImage realImage;
+    private String fileName;
+
+    public ProxyImage(String fileName) {
+        this.fileName = fileName;
+    }
+
+    @Override
+    public void display() {
+        if(realImage == null) {
+            realImage = new RealImage(fileName);  
+        }
+        realImage.display();
+    }
+}
+
+4. Client
+------------
+public class Client {
+    public static void main(String[] args) {
+        Image image = new ProxyImage("photo.png");
+
+        System.out.println("First call:");
+        image.display();    
+
+        System.out.println("Second call:");
+        image.display();    
+    }
+}
+
+Output
+First call:
+Loading photo.png
+Displaying photo.png
+
+Second call:
+Displaying photo.png
+
+
+✔ First display loads the image
+✔ Second display uses cached RealImage → faster
+
+🧩 When to Use Proxy Pattern?
+*******************************
+➤ When object creation is expensive
+➤ When you want to control access
+➤ When you need lazy loading
+➤ When you want logging, caching, validation
+➤ When the real object is remote/inaccessible
+
+🧩 Advantages
+****************
+➤ Adds extra functionality without changing original code
+➤ Supports lazy loading
+➤ Improves performance & security
+➤ Helps in distributed systems
+
+🧩 Disadvantages
+******************
+➤ Adds an extra layer → slightly more complex
+➤ More classes → increased maintenance
+
+###########################
+🧩 Memento Design Pattern
+###########################
+⭐ Definition
+****************
+➤ The Memento Design Pattern is a behavioral design pattern that lets you
+restore an object’s state to a previous state without exposing its internal details.
+
+➤ It provides undo/rollback functionality just like in text editors, games, forms, etc.
+
+🎯 Intent
+***********
+➤ Capture an object’s internal state
+➤ Store it outside the object without violating encapsulation
+➤ Restore it later when needed
+
+🎮 Real-Life Analogy
+**********************
+➤ Think of a game checkpoint:
+👉 When you reach a checkpoint, the game saves your progress (memento).
+👉 If you die, you load the checkpoint (restore state).
+👉 The game doesn’t expose internal variables like health, coins, position.
+
+🏗️ Participants
+*******************
+1️⃣ Originator
+===============
+➤ The object whose state needs to be saved.
+➤ Creates mementos and restores from mementos.
+
+2️⃣ Memento
+============
+➤ Stores the internal state of the originator.
+➤ No setters → ensures encapsulation.
+
+3️⃣ Caretaker
+=============
+➤ Stores the mementos.
+➤ Doesn’t modify or inspect mementos.
+➤ Responsible for maintaining rollback history.
+
+📦 When to Use
+****************
+➤ You need an undo/redo mechanism
+➤ You want to save object state without breaking encapsulation
+➤ You want to implement versioning or checkpoints
+
+👨‍💻 Example (Java Code)
+***********************
+Originator
+----------
+class Editor {
+    private String content;
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public EditorMemento save() {
+        return new EditorMemento(content);
+    }
+
+    public void restore(EditorMemento memento) {
+        this.content = memento.getContent();
+    }
+}
+
+Memento
+--------
+class EditorMemento {
+    private final String content;
+
+    public EditorMemento(String content) {
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+}
+
+Caretaker
+----------
+class History {
+    private Stack<EditorMemento> history = new Stack<>();
+
+    public void push(EditorMemento memento) {
+        history.push(memento);
+    }
+
+    public EditorMemento pop() {
+        return history.pop();
+    }
+}
+
+Usage
+------
+public class MementoDesignPatternExample {
+    public static void main(String[] args) {
+        Editor editor = new Editor();
+        History history = new History();
+
+        editor.setContent("A");
+        history.push(editor.save());
+
+        editor.setContent("B");
+        history.push(editor.save());
+
+        editor.setContent("C");
+
+        editor.restore(history.pop());
+        System.out.println(editor.getContent()); // Output: B
+
+        editor.restore(history.pop());
+        System.out.println(editor.getContent()); // Output: A
+    }
+}
+
+💡 Key Points (Interview-Friendly)
+************************************
+➤ Provides undo/rollback functionality.
+➤ Protects encapsulation — internal details are not exposed.
+➤ Caretaker stores the mementos but doesn’t modify them.
+➤ Originator creates and restores from mementos.
+➤ Best for editors, games, transactions, UI states.
+
+################################################
+🧩 Bridge Design Pattern (Structural Pattern)
+################################################
+The Bridge Pattern is used to decouple an abstraction from its implementation so that both can evolve independently.
+
+🧩 Why Bridge Pattern?
+************************
+➤ When you have two dimensions of change in a system:
+👉 Example: Shape (Circle, Square) and Color (Red, Blue).
+If you try to combine them using inheritance, you’ll end up with classes like:
+➤ RedCircle
+➤ BlueCircle
+➤ RedSquare
+➤ BlueSquare
+This explodes into MANY subclasses → Complex + Hard to maintain.
+
+Bridge solves this.
+
+🧩 Definition
+**************
+➤ Separates Abstraction (what to do) from Implementation (how to do) by placing them in different class hierarchies.
+
+🧩 Real-Life Analogy
+*********************
+➤ TV Remote
+👉 Remote = Abstraction
+👉 TV Brand (Sony, LG, Samsung) = Implementation
+Same remote buttons work with any brand because remote and TV are loosely coupled.
+
+🧩 Structure
+**************
+➤ Abstraction Layer
+➤ High-level control
+➤ Holds reference to Implementation (bridge)
+➤ Implementation Layer
+➤ Low-level operations
+➤ Different concrete implementations
+➤ Abstraction → Implementor → ConcreteImplementor
+
+🧩 UML 
+********
+        Abstraction
+            |
+      Ref to Implementor  <---- Bridge
+            |
+      -----------------
+      |               |
+RefinedAbstraction   Implementor (interface)
+                          |
+                 ----------------------
+                 |                    |
+       ConcreteImplementorA   ConcreteImplementorB
+
+🧩 Java Example (Easy & Clear)
+*********************************
+🎯 Goal → Draw shapes with different colors
+➤ Instead of creating many subclasses, we separate Shape & Color.
+
+1️⃣ Implementor (Color interface)
+---------------------------------
+interface Color {
+    void applyColor();
+}
+
+2️⃣ Concrete Implementors
+--------------------------
+class RedColor implements Color {
+    public void applyColor() {
+        System.out.println("Applying Red Color");
+    }
+}
+
+class BlueColor implements Color {
+    public void applyColor() {
+        System.out.println("Applying Blue Color");
+    }
+}
+
+3️⃣ Abstraction (Shape)
+------------------------
+abstract class Shape {
+    protected Color color;
+
+    Shape(Color color) {
+        this.color = color;
+    }
+
+    abstract void draw();
+}
+
+4️⃣ Refined Abstraction
+------------------------
+class Circle extends Shape {
+    Circle(Color color) {
+        super(color);
+    }
+
+    public void draw() {
+        System.out.print("Drawing Circle → ");
+        color.applyColor();
+    }
+}
+
+class Square extends Shape {
+    Square(Color color) {
+        super(color);
+    }
+
+    public void draw() {
+        System.out.print("Drawing Square → ");
+        color.applyColor();
+    }
+}
+
+5️⃣ Client Code
+-----------------
+public class BridgePatternDemo {
+    public static void main(String[] args) {
+        Shape redCircle = new Circle(new RedColor());
+        Shape blueSquare = new Square(new BlueColor());
+
+        redCircle.draw();
+        blueSquare.draw();
+    }
+}
+
+🧩 Output
+------------
+Drawing Circle → Applying Red Color
+Drawing Square → Applying Blue Color
+
+🧩 When to Use Bridge Pattern?
+********************************
+➤ When you have multiple dimensions that vary independently
+👉 Shape + Color
+👉 Device + Remote
+👉 Payment Method + Payment Gateway
+
+➤ When subclass explosion happens due to combinations.
+
+🧩 Benefits
+*************
+➤ Abstraction & implementation can change independently
+➤ No class explosion
+➤ More flexible system
+➤ Better testability
+
+🧩 Interview-Ready Points
+****************************
+➤ Bridge = Composition over Inheritance
+➤ Helps avoid Cartesian product explosion of subclasses
+➤ Used when both Abstraction & Implementor hierarchies vary
+➤ Makes code scalable and maintainable
