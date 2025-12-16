@@ -2162,3 +2162,662 @@ Drawing Square → Applying Blue Color
 ➤ Helps avoid Cartesian product explosion of subclasses
 ➤ Used when both Abstraction & Implementor hierarchies vary
 ➤ Makes code scalable and maintainable
+
+###########################################################
+🧩 State Design Pattern — Complete Notes (Interview Ready)
+###########################################################
+🧩 Definition
+****************
+➤ The State Pattern is a Behavioral Design Pattern that allows an object to change its behavior when its internal state changes.
+➤ The object will appear to change its class at runtime.
+
+➤ In simple words:
+Behavior depends on the current state, and state-specific behavior is encapsulated in separate classes.
+
+🧩 Intent (Why State Pattern?)
+*******************************
+➤ To avoid large if-else or switch statements based on state
+➤ To make state transitions explicit and manageable
+➤ To encapsulate state-specific behavior into separate classes
+➤ To allow behavior change at runtime without changing client code
+
+🧩 Real-World Examples
+***********************
+➤ Traffic light system (Red → Yellow → Green)
+➤ ATM machine states (Idle, CardInserted, CashWithdrawn)
+➤ Media player (Playing, Paused, Stopped)
+➤ Order lifecycle (New, Paid, Shipped, Delivered)
+➤ TCP connection states
+➤ Workflow engines
+
+🧩 When to Use State Pattern?
+********************************
+➤ When an object has multiple states
+➤ When behavior changes depending on the state
+➤ When state transitions are complex
+➤ When code has many conditionals based on state
+➤ When you want cleaner, extensible design
+
+🧩 Key Characteristics 
+************************
+➤ Each state is represented by a separate class
+➤ Context object maintains a reference to the current state
+➤ State transition happens by changing the state object
+➤ Follows Open/Closed Principle
+➤ Improves readability and maintainability
+
+🧩 Structure (UML Essentials)
+******************************
+➤ State Interface
+➤ Declares state-specific behavior
+
+➤ Concrete States
+➤ Implement behavior for each state
+
+➤ Context
+➤ Maintains current state
+➤ Delegates behavior to state object
+
+➤ Client
+➤ Interacts with Context
+
+🧩 Java Example — Media Player
+********************************
+1️⃣ State Interface
+--------------------
+public interface PlayerState {
+    void pressPlay(MediaPlayer player);
+}
+
+2️⃣ Concrete States
+---------------------
+public class PlayingState implements PlayerState {
+    public void pressPlay(MediaPlayer player) {
+        System.out.println("Pausing the music");
+        player.setState(new PausedState());
+    }
+}
+
+public class PausedState implements PlayerState {
+    public void pressPlay(MediaPlayer player) {
+        System.out.println("Playing the music");
+        player.setState(new PlayingState());
+    }
+}
+
+3️⃣ Context Class
+------------------
+public class MediaPlayer {
+    private PlayerState state;
+
+    public MediaPlayer() {
+        state = new PausedState(); // initial state
+    }
+
+    public void setState(PlayerState state) {
+        this.state = state;
+    }
+
+    public void pressPlay() {
+        state.pressPlay(this);
+    }
+}
+
+4️⃣ Client Code
+-----------------
+public class Main {
+    public static void main(String[] args) {
+        MediaPlayer player = new MediaPlayer();
+
+        player.pressPlay(); // Play
+        player.pressPlay(); // Pause
+    }
+}
+
+Output
+Playing the music
+Pausing the music
+
+
+🧩 How State Pattern Solves the Problem
+*****************************************
+➤ No if-else on state
+➤ Behavior is moved into state classes
+➤ Easy to add new states
+➤ Clean separation of concerns
+
+🧩 Advantages
+**************
+➤ Eliminates complex conditional logic
+➤ Easy to add new states
+➤ Improves code readability
+➤ Encapsulates state-specific behavior
+➤ Follows SRP & OCP
+
+🧩 Disadvantages
+******************
+➤ Increases number of classes
+➤ State transition logic can be scattered
+➤ Might be overkill for simple state logic
+
+🧩 State vs Strategy 
+*********************
+➤ State Pattern
+➤ State changes automatically
+➤ Context controls transitions
+➤ Used when behavior depends on internal state
+
+➤ Strategy Pattern
+➤ Strategy chosen by client
+➤ No automatic switching
+➤ Used for interchangeable algorithms
+
+🧩 State vs If-Else
+********************
+➤ If-Else
+➤ Hard to maintain
+➤ Breaks OCP
+➤ Difficult to extend
+
+➤ State Pattern
+➤ Clean & extensible
+➤ Behavior encapsulated
+➤ Easy to maintain
+
+🧩 Common Interview Questions
+********************************
+➤ What is State Design Pattern?
+➤ Difference between State and Strategy?
+➤ Real-world use cases of State pattern?
+➤ How does State eliminate if-else?
+➤ What happens when a new state is added?
+➤ Is State pattern behavioral or structural?
+
+➤ Triggers the command
+➤ Client
+➤ Creates and assigns commands to invoker
+
+###########################
+🧩 Command Design Pattern 
+###########################
+🧩 Definition
+***************
+➤ The Command Pattern is a Behavioral Design Pattern that turns a request into a standalone object containing all information about the request.
+➤ This allows you to parameterize clients with different requests, queue or log them, and support undo/redo operations.
+
+➤ In simple words:
+Command encapsulates a request as an object.
+
+🧩 Intent (Why Command Pattern?)
+**********************************
+➤ To decouple the sender (invoker) from the receiver (actual object performing the action)
+➤ To treat requests as objects
+➤ To support undo/redo functionality
+➤ To queue, log, or schedule operations
+➤ To remove hard-coded method calls
+
+🧩 Real-World Examples
+************************
+➤ TV remote buttons (ON, OFF, Volume Up)
+➤ Menu items in GUI applications
+➤ Undo/Redo in editors (Word, VS Code)
+➤ Job queues
+➤ Transaction systems
+➤ Spring Runnable, Callable
+➤ Servlet request handling
+➤ Macro commands (execute multiple commands together)
+
+🧩 When to Use Command Pattern?
+*********************************
+➤ When you want to decouple UI actions from business logic
+➤ When you want to support undo/redo
+➤ When commands need to be queued or logged
+➤ When operations should be treated uniformly
+➤ When you want to parameterize objects with operations
+
+🧩 Key Characteristics (Must-Know for Interviews)
+**************************************************
+➤ Request is wrapped in a command object
+➤ Invoker doesn’t know how the request is executed
+➤ Receiver performs the actual action
+➤ Supports undo/redo easily
+➤ Follows Open/Closed Principle
+
+🧩 Structure (UML Essentials)
+*******************************
+➤ Command (Interface / Abstract Class)
+➤ Declares execution method
+
+➤ ConcreteCommand
+➤ Binds receiver and implements execute/undo
+
+➤ Receiver
+➤ Knows how to perform the operation
+
+➤ Invoker
+➤ Triggers the command
+
+➤ Client
+➤ Creates and assigns commands to invoker
+
+🧩 Java Example — Remote Control (Classic Example)
+****************************************************
+1️⃣ Command Interface
+----------------------
+public interface Command {
+    void execute();
+}
+
+2️⃣ Receiver
+------------
+public class Light {
+    public void turnOn() {
+        System.out.println("Light is ON");
+    }
+    public void turnOff() {
+        System.out.println("Light is OFF");
+    }
+}
+
+3️⃣ Concrete Commands
+-----------------------
+public class LightOnCommand implements Command {
+    private Light light;
+
+    public LightOnCommand(Light light) {
+        this.light = light;
+    }
+
+    public void execute() {
+        light.turnOn();
+    }
+}
+
+public class LightOffCommand implements Command {
+    private Light light;
+
+    public LightOffCommand(Light light) {
+        this.light = light;
+    }
+
+    public void execute() {
+        light.turnOff();
+    }
+}
+
+4️⃣ Invoker
+------------
+public class RemoteControl {
+    private Command command;
+
+    public void setCommand(Command command) {
+        this.command = command;
+    }
+
+    public void pressButton() {
+        command.execute();
+    }
+}
+
+5️⃣ Client Code
+-----------------
+public class Client {
+    public static void main(String[] args) {
+        Light light = new Light();
+
+        Command onCommand = new LightOnCommand(light);
+        Command offCommand = new LightOffCommand(light);
+
+        RemoteControl remote = new RemoteControl();
+
+        remote.setCommand(onCommand);
+        remote.pressButton();
+
+        remote.setCommand(offCommand);
+        remote.pressButton();
+    }
+}
+
+🧩 Output
+-----------
+Light is ON
+Light is OFF
+
+🧩 Undo / Redo Support (Interview Favorite)
+*********************************************
+➤ Add an undo() method in Command
+➤ Store command history in stack
+
+public interface Command {
+    void execute();
+    void undo();
+}
+
+➤ Used heavily in editors and transaction systems
+
+🧩 Macro Command (Advanced Concept)
+*************************************
+➤ Command that executes multiple commands together
+➤ Example: “Turn off all lights”
+
+🧩 Advantages
+***************
+➤ Decouples sender and receiver
+➤ Easy to add new commands
+➤ Supports undo/redo
+➤ Supports logging and queuing
+➤ Clean and extensible design
+
+🧩 Disadvantages
+******************
+➤ Increases number of classes
+➤ Can add complexity for simple use cases
+➤ Requires careful command management
+
+🧩 Command vs Strategy vs Observer (Interview Trap)
+*****************************************************
+➤ Command
+➤ Encapsulates a request
+➤ Focus on when and how to execute
+
+➤ Strategy
+➤ Encapsulates algorithms
+➤ Focus on how something is done
+
+➤ Observer
+➤ Notifies multiple objects on state change
+
+🧩 Common Interview Questions
+*******************************
+➤ What is Command Pattern?
+➤ How does Command support undo/redo?
+➤ Difference between Command and Strategy?
+➤ Real-world use cases?
+➤ What is a Macro Command?
+➤ How does Command decouple sender and receiver?
+
+##############################
+🧩 Composite Design Pattern 
+##############################
+🧩 Definition
+**************
+➤ The Composite Pattern is a Structural Design Pattern that lets you treat individual objects and groups of objects uniformly.
+➤ It composes objects into a tree structure (part–whole hierarchy) and allows clients to work with leaf and composite objects in the same way.
+
+🧩 Intent (Why Composite Pattern?)
+************************************
+➤ To represent hierarchical structures (tree-like).
+➤ To allow clients to treat single objects and collections uniformly.
+➤ To simplify client code by removing special-case handling.
+➤ To follow Open/Closed Principle when adding new components.
+
+🧩 Real-World Examples
+************************
+➤ File system
+➤ File (Leaf)
+➤ Folder (Composite)
+➤ Organization structure
+➤ Employee → Manager → Director
+➤ HTML DOM tree
+➤ Menu and sub-menu systems
+➤ Java Swing components (JComponent)
+➤ XML / JSON tree structures
+
+🧩 When to Use Composite Pattern?
+***********************************
+➤ When your problem naturally forms a tree structure.
+➤ When clients should not care whether they are dealing with a single object or a group.
+➤ When you want uniform operations on both leaf and composite objects.
+
+🧩 Key Characteristics 
+************************
+➤ Uses recursive composition.
+➤ Leaf and Composite implement the same interface.
+➤ Client interacts only with the Component interface.
+➤ Simplifies client logic.
+➤ Tree structure (part–whole hierarchy).
+
+🧩 Structure (UML Essentials)
+********************************
+➤ Component (Interface / Abstract Class)
+➤ Declares common operations
+
+➤ Leaf
+➤ Represents individual objects
+➤ No children
+
+➤ Composite
+➤ Stores child components
+➤ Implements child-related operations
+
+➤ Client
+➤ Works with Component interface
+
+🧩 Java Example — File System
+*******************************
+1️⃣ Component
+--------------
+public interface FileSystemComponent {
+    void showDetails();
+}
+
+2️⃣ Leaf
+----------
+public class File implements FileSystemComponent {
+    private String name;
+
+    public File(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void showDetails() {
+        System.out.println("File: " + name);
+    }
+}
+
+3️⃣ Composite
+--------------
+import java.util.ArrayList;
+import java.util.List;
+
+public class Folder implements FileSystemComponent {
+    private String name;
+    private List<FileSystemComponent> children = new ArrayList<>();
+
+    public Folder(String name) {
+        this.name = name;
+    }
+
+    public void add(FileSystemComponent component) {
+        children.add(component);
+    }
+
+    public void remove(FileSystemComponent component) {
+        children.remove(component);
+    }
+
+    @Override
+    public void showDetails() {
+        System.out.println("Folder: " + name);
+        for (FileSystemComponent component : children) {
+            component.showDetails();
+        }
+    }
+}
+
+4️⃣ Client Code
+----------------
+public class Main {
+    public static void main(String[] args) {
+        File file1 = new File("resume.pdf");
+        File file2 = new File("photo.png");
+
+        Folder documents = new Folder("Documents");
+        documents.add(file1);
+        documents.add(file2);
+
+        Folder root = new Folder("Root");
+        root.add(documents);
+
+        root.showDetails();
+    }
+}
+
+🧩 Output
+-----------
+Folder: Root
+Folder: Documents
+File: resume.pdf
+File: photo.png
+
+🧩 Advantages
+***************
+➤ Treats individual and composite objects uniformly
+➤ Simplifies client code
+➤ Easy to add new components
+➤ Natural representation of tree structures
+➤ Follows Open/Closed Principle
+
+🧩 Disadvantages
+******************
+➤ Hard to restrict components (leaf vs composite rules)
+➤ Can make design overly general
+➤ Debugging recursive structures can be tricky
+
+🧩 Composite vs Decorator 
+**************************
+➤ Composite
+➤ Focuses on structure (tree)
+➤ Manages children
+
+➤ Decorator
+➤ Focuses on adding behavior
+➤ No child management
+
+🧩 Composite vs Facade
+************************
+➤ Composite
+➤ Represents hierarchical relationships
+
+➤ Facade
+➤ Simplifies subsystem access
+
+🧩 Real Java Examples
+***********************
+➤ java.awt.Container
+➤ javax.swing.JComponent
+➤ DOM API
+➤ JSON/XML parsers
+
+🧩 Common Interview Questions
+*******************************
+➤ What is Composite Pattern?
+➤ Where is Composite used in real projects?
+➤ Difference between Composite and Decorator?
+➤ Can a Composite contain both Leaf and Composite objects? (Yes)
+➤ What problem does Composite solve?
+
+#############################
+🧩 Flyweight Design Pattern 
+#############################
+🧩 Definition
+****************
+➤ The Flyweight Pattern is a Structural Design Pattern that reduces memory usage by sharing common (intrinsic) state between multiple objects instead of storing it separately.
+➤ It is used when large numbers of similar objects are created.
+
+🧩 Intent (Why Flyweight?)
+****************************
+➤ To minimize memory consumption
+➤ To improve performance
+➤ To share common data across objects
+➤ To handle massive object creation efficiently
+
+🧩 Intrinsic vs Extrinsic State (Very Important)
+**************************************************
+➤ Intrinsic State
+➤ Shared
+➤ Stored inside Flyweight
+➤ Example: character shape, font
+
+➤ Extrinsic State
+➤ Not shared
+➤ Passed by client
+➤ Example: position, color
+
+🧩 Real-World Examples
+*************************
+➤ Text editors (characters sharing glyph data)
+➤ Game development (bullets, trees)
+➤ Caching systems
+➤ Java String Pool
+➤ Wrapper classes (Integer.valueOf())
+
+🧩 Structure (UML Essentials)
+*******************************
+➤ Flyweight Interface
+➤ Concrete Flyweight
+➤ Flyweight Factory
+➤ Client
+
+🧩 Java Example — Character Rendering
+***************************************
+1️⃣ Flyweight Interface
+------------------------
+public interface Character {
+    void display(int x, int y);
+}
+
+2️⃣ Concrete Flyweight
+-----------------------
+public class CharacterFlyweight implements Character {
+    private char symbol; // intrinsic
+
+    public CharacterFlyweight(char symbol) {
+        this.symbol = symbol;
+    }
+
+    public void display(int x, int y) {
+        System.out.println(symbol + " at (" + x + "," + y + ")");
+    }
+}
+
+3️⃣ Flyweight Factory
+---------------------
+import java.util.*;
+
+public class CharacterFactory {
+    private static final Map<Character, Character> cache = new HashMap<>();
+
+    public static Character getCharacter(char c) {
+        cache.putIfAbsent(c, new CharacterFlyweight(c));
+        return cache.get(c);
+    }
+}
+
+4️⃣ Client
+-----------
+Character c1 = CharacterFactory.getCharacter('A');
+Character c2 = CharacterFactory.getCharacter('A');
+System.out.println(c1 == c2); // true
+
+🧩 Advantages
+*****************
+➤ Significant memory reduction
+➤ Faster performance for large systems
+➤ Object reuse
+➤ Efficient caching
+
+🧩 Disadvantages
+******************
+➤ Increased complexity
+➤ Extrinsic state handling required
+➤ Not suitable for small number of objects
+
+🧩 Common Interview Questions
+********************************
+➤ What is Flyweight Pattern?
+➤ Intrinsic vs Extrinsic state?
+➤ Where is Flyweight used in Java?
+➤ Difference between Flyweight and Singleton?
+➤ Why is String Pool a Flyweight?

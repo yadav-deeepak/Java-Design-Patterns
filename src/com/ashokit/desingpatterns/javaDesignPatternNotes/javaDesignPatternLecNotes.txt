@@ -1114,3 +1114,49 @@ The command pattern involves the following components:
 ******************************************************
 ➤ The singleton pattern helps us maintain only one object in the system. In other words once the requried object is created we cant create more. We need to reuse the existing object in all parts of the application. 
 ➤ The flyweight pattern is used when we have to create large number of similar objects which are different based on client provided extrinsic attribute. 
+
+############################
+❄️ Mediator Design Pattern 
+############################
+➤ The intent of the mediator pattern is to reduce the complexity and dependencies between tightly coupled objects communicating directly with one another. 
+Allows loose coupling by encapsulating the way disparate sets of objects interact and communicate with each other. Allows for the actions of each object set to vary independently of one another.
+➤ This promotes loose coupling as a set of components working together no longer have to interact directly . Instead they only refer to the single mediator object . This way its is also easier to reuse these objects in other parts of the system. 
+➤ In OOPs programs often consist of many classes. Business logic and computation are distributed among these classes. However as more classes are added to a program especially during maintenance and/or refactoring the problem of communicationi between these classes may become more complex. This makes the program harder to read and maintain. Furthermore it can become difficult to change the program since any change may affect code in several other classes. 
+➤ With the mediator pattern communication between objects in encapsulated within a mediator object. Objects no longer communicate directly with each other, but instead communicate through the mediator. This reduces the dependencies between communicating objects thereby reducing coupling.
+➤ Example : Chat application in this we have several participants . It's not a good idea to connect each participant to all the others because the number of connection would be really high . The best solution is to have a hub where all participants will connect this hub is just the mediator class.
+
+👉 Mediator commonly consists of these four components: 
+➤ Mediator: Defines communication between collegues 
+➤ Mediator is typically and abstract based class or interface 
+
+➤ Concrete mediator: Implements communication between collegues.
+➤ Collegue : Communicates only with one mediator
+➤ Concrete collegue : Receive messages from the mediator. 
+
+###############################
+❄️ Interpreter Design Pattern 
+###############################
+➤ The interpreter design pattern is a behavioural pattern that defines a way to evaluate and interpret sentences or expressions in a language. It invloves defining a grammer or language syntax and then implementing a parser that can parse and interpret expressions written in that language 
+Example: 
+expression::= gender | age | policyType 
+gender::= "male" | "female"
+age::= "age" comp number 
+comp::= "<" | ">" | "=" 
+number::= digit{digit}
+digit::= "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"
+policyType::="basic"|"premium"
+
+##########
+❄️ SOLID 
+##########
+S : Single Responsibility 
+➤ Every class you will be writing should have a single responsibility.
+
+O : Open Closed Principle 
+➤ It means open for extension and closed for modification.
+
+L : Liskov Substitution Principle 
+
+I : Interface Seggregation Principle 
+
+D : Dependency Inversion Principle 
