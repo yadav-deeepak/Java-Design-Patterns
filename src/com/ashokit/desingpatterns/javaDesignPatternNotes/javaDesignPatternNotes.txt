@@ -2821,3 +2821,383 @@ System.out.println(c1 == c2); // true
 ➤ Where is Flyweight used in Java?
 ➤ Difference between Flyweight and Singleton?
 ➤ Why is String Pool a Flyweight?
+
+############################
+🧩 Mediator Design Pattern 
+############################
+🧩 Definition
+****************
+➤ The Mediator Pattern is a Behavioral Design Pattern that defines an object (Mediator) to encapsulate how multiple objects interact.
+➤ Instead of objects communicating directly with each other, they communicate through a mediator.
+
+➤ In simple words:
+Mediator centralizes communication logic and reduces coupling between objects.
+
+🧩 Intent (Why Mediator Pattern?)
+**************************************
+➤ To reduce tight coupling between interacting objects.
+➤ To avoid complex many-to-many relationships.
+➤ To centralize communication logic in one place.
+➤ To make the system easier to maintain and extend.
+
+🧩 Problem Without Mediator
+*****************************
+➤ Objects communicate directly with each other.
+➤ Leads to:
+➤ Too many dependencies
+➤ Difficult maintenance
+➤ Hard-to-change communication logic
+
+Example problem:
+
+User → Chat → Notification → Logging → Email → SMS
+
+➤ Becomes messy very fast ❌
+
+🧩 Solution With Mediator
+**************************
+➤ Objects talk only to Mediator.
+➤ Mediator handles who should talk to whom.
+➤ Objects become loosely coupled.
+
+🧩 Real-World Examples
+*************************
+➤ Air Traffic Control (ATC)
+➤ Planes don’t communicate directly
+➤ ATC (Mediator) controls everything
+
+➤ Chat Application
+➤ Users send messages via chat server
+
+➤ UI Dialog Box
+➤ Buttons, text fields interact through dialog
+
+➤ Spring Framework
+➤ Event handling
+➤ Microservices communication via API Gateway
+
+🧩 Key Characteristics (Must-Know for Interviews)
+***************************************************
+➤ Promotes loose coupling
+➤ Centralizes communication logic
+➤ Simplifies object collaboration
+➤ Colleagues do NOT talk to each other directly
+➤ Mediator can become complex if overused
+
+🧩 Structure (UML Essentials)
+*******************************
+➤ Mediator (Interface / Abstract class)
+➤ Defines communication methods
+
+➤ ConcreteMediator
+➤ Implements coordination logic
+
+➤ Colleague (Abstract class / Interface)
+➤ Communicates via mediator
+
+➤ ConcreteColleagues
+➤ Actual interacting objects
+
+🧩 Java Example — Chat Room (Classic Example)
+***********************************************
+1️⃣ Mediator Interface
+-----------------------
+public interface ChatMediator {
+    void sendMessage(String message, User user);
+}
+
+2️⃣ Concrete Mediator
+----------------------
+import java.util.ArrayList;
+import java.util.List;
+
+public class ChatRoom implements ChatMediator {
+    private List<User> users = new ArrayList<>();
+
+    public void addUser(User user) {
+        users.add(user);
+    }
+
+    @Override
+    public void sendMessage(String message, User sender) {
+        for (User user : users) {
+            if (user != sender) {
+                user.receive(message);
+            }
+        }
+    }
+}
+
+3️⃣ Colleague (User)
+---------------------
+public abstract class User {
+    protected ChatMediator mediator;
+    protected String name;
+
+    public User(ChatMediator mediator, String name) {
+        this.mediator = mediator;
+        this.name = name;
+    }
+
+    public abstract void send(String message);
+    public abstract void receive(String message);
+}
+
+4️⃣ Concrete Colleague
+-----------------------
+public class ChatUser extends User {
+
+    public ChatUser(ChatMediator mediator, String name) {
+        super(mediator, name);
+    }
+
+    @Override
+    public void send(String message) {
+        System.out.println(name + " sends: " + message);
+        mediator.sendMessage(message, this);
+    }
+
+    @Override
+    public void receive(String message) {
+        System.out.println(name + " receives: " + message);
+    }
+}
+
+5️⃣ Client Code
+----------------
+public class Main {
+    public static void main(String[] args) {
+        ChatRoom chatRoom = new ChatRoom();
+
+        User u1 = new ChatUser(chatRoom, "A");
+        User u2 = new ChatUser(chatRoom, "B");
+        User u3 = new ChatUser(chatRoom, "C");
+
+        chatRoom.addUser(u1);
+        chatRoom.addUser(u2);
+        chatRoom.addUser(u3);
+
+        u1.send("Hello everyone!");
+    }
+}
+
+🧩 Output
+-----------
+A sends: Hello everyone!
+B receives: Hello everyone!
+C receives: Hello everyone!
+
+🧩 Advantages
+***************
+➤ Reduces coupling between components
+➤ Centralizes communication logic
+➤ Easier to maintain and modify
+➤ Improves code readability
+➤ Encourages Single Responsibility Principle
+
+🧩 Disadvantages
+******************
+➤ Mediator can become a God Object
+➤ Adds extra layer of abstraction
+➤ Hard to maintain if mediator becomes too complex
+
+🧩 Mediator vs Observer 
+*************************
+➤ Mediator
+➤ Central controller
+➤ Objects communicate via mediator
+
+➤ Observer
+➤ One-to-many dependency
+➤ Observers listen for state changes
+
+🧩 Mediator vs Facade
+***********************
+➤ Mediator
+➤ Controls interaction between peers
+
+➤ Facade
+➤ Simplifies access to subsystem
+
+🧩 Common Interview Questions
+*******************************
+➤ What is Mediator Pattern?
+➤ How does Mediator reduce coupling?
+➤ Real-world use case of Mediator?
+➤ Difference between Mediator and Observer?
+➤ Can Mediator become a God Object?
+➤ Where is Mediator used in real frameworks?
+
+###############################
+🧩 Interpreter Design Pattern 
+###############################
+🧩 Definition
+***************
+➤ The Interpreter Pattern is a Behavioral Design Pattern used to define a grammar for a language and provide an interpreter to interpret sentences of that language.
+➤ It represents grammar rules as classes and uses them to interpret expressions.
+
+➤ In simple words:
+It converts expressions (rules/grammar) into executable logic.
+
+🧩 Intent (Why Interpreter Pattern?)
+***************************************
+➤ To interpret sentences in a simple language.
+➤ To define grammar rules using classes.
+➤ To evaluate expressions dynamically.
+➤ To avoid hardcoding parsing logic.
+
+🧩 When to Use Interpreter Pattern?
+*************************************
+➤ When grammar is simple and small
+➤ When expressions need to be evaluated repeatedly
+➤ When language rules can be represented as a class hierarchy
+➤ When performance is not a critical concern
+
+⚠️ Not suitable for complex grammars (use parser generators instead)
+
+🧩 Real-World Examples
+************************
+➤ SQL query parsing
+➤ Regular expression engines
+➤ Mathematical expression evaluators
+➤ Rule engines
+➤ Boolean expression evaluation
+➤ Spring Expression Language (SpEL – conceptually similar)
+
+🧩 Key Participants (Must-Know for Interviews)
+************************************************
+➤ AbstractExpression
+➤ Declares interpret method
+
+➤ TerminalExpression
+➤ Implements grammar for terminal symbols
+
+➤ NonTerminalExpression
+➤ Implements grammar for non-terminal symbols
+
+➤ Context
+➤ Contains information used during interpretation
+
+➤ Client
+➤ Builds expression tree and triggers interpretation
+
+🧩 Structure (UML Overview)
+*****************************
+➤ Expression (interface / abstract class)
+➤ TerminalExpression
+➤ NonTerminalExpression
+➤ Context
+➤ Client
+
+🧩 Java Example — Boolean Expression Interpreter
+**************************************************
+1️⃣ Expression Interface
+--------------------------
+public interface Expression {
+    boolean interpret(String context);
+}
+
+2️⃣ Terminal Expression
+------------------------
+public class TerminalExpression implements Expression {
+    private String data;
+
+    public TerminalExpression(String data) {
+        this.data = data;
+    }
+
+    @Override
+    public boolean interpret(String context) {
+        return context.contains(data);
+    }
+}
+
+3️⃣ Non-Terminal Expressions
+-----------------------------
+public class OrExpression implements Expression {
+    private Expression expr1;
+    private Expression expr2;
+
+    public OrExpression(Expression expr1, Expression expr2) {
+        this.expr1 = expr1;
+        this.expr2 = expr2;
+    }
+
+    @Override
+    public boolean interpret(String context) {
+        return expr1.interpret(context) || expr2.interpret(context);
+    }
+}
+
+public class AndExpression implements Expression {
+    private Expression expr1;
+    private Expression expr2;
+
+    public AndExpression(Expression expr1, Expression expr2) {
+        this.expr1 = expr1;
+        this.expr2 = expr2;
+    }
+
+    @Override
+    public boolean interpret(String context) {
+        return expr1.interpret(context) && expr2.interpret(context);
+    }
+}
+
+4️⃣ Client Code
+---------------
+public class InterpreterDemo {
+    public static void main(String[] args) {
+
+        Expression java = new TerminalExpression("Java");
+        Expression spring = new TerminalExpression("Spring");
+
+        Expression javaOrSpring = new OrExpression(java, spring);
+        Expression javaAndSpring = new AndExpression(java, spring);
+
+        System.out.println(javaOrSpring.interpret("I love Java"));
+        System.out.println(javaAndSpring.interpret("Java with Spring"));
+    }
+}
+
+Output
+true
+true
+
+🧩 Advantages
+****************
+➤ Easy to change or extend grammar
+➤ Grammar rules are clearly represented as classes
+➤ Easy to add new expressions
+➤ Clean separation of grammar and evaluation logic
+
+🧩 Disadvantages
+******************
+➤ Class explosion if grammar grows large
+➤ Hard to maintain complex grammars
+➤ Performance issues for large expression trees
+➤ Not suitable for complex languages
+
+🧩 Interpreter vs Visitor 
+***************************
+➤ Interpreter
+➤ Focuses on grammar and evaluation
+➤ Suitable for simple languages
+
+➤ Visitor
+➤ Focuses on operations on object structures
+➤ Better for complex object hierarchies
+
+🧩 Interpreter vs Strategy
+***************************
+➤ Interpreter → Evaluates language grammar
+➤ Strategy → Switches algorithms dynamically
+
+🧩 Common Interview Questions
+*******************************
+➤ What is Interpreter Design Pattern?
+➤ When should Interpreter be avoided?
+➤ Real-world examples of Interpreter?
+➤ Difference between Terminal and Non-Terminal expression?
+➤ Interpreter vs Visitor?
+➤ Is Interpreter a behavioral pattern? (Yes)

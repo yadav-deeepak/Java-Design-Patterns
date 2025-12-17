@@ -1160,3 +1160,14 @@ L : Liskov Substitution Principle
 I : Interface Seggregation Principle 
 
 D : Dependency Inversion Principle 
+
+###############################
+❄️ Service Discovery Pattern 
+##############################
+➤ It is a pattern used in microservices architecture to locate and discover other microservices in a distributed system. The main idea behind this pattern is that microservices can register themselves with a service registry or discovery service, and other microservices can look up and discover the registered services using the registry 
+➤ The service discovery pattern involves two main components a service registry and a client side service discovery mechanism. The service registry is responsible for maintaining a list of available services and their network locations. The client side discovery mechanism is responsible for querying the registry to discover available services 
+➤ Eureka server is an example of a service registry that can be used to implement the service discovery pattern . Eureka server is a self contained service that can be used to register and discover services in a microservices architecture.
+
+🌟 The need for service discovery 
+************************************
+➤ A microservice needs to know the location (IP address and port) every service it communicates with.
