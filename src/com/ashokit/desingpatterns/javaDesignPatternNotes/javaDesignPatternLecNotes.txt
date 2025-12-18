@@ -1171,3 +1171,12 @@ D : Dependency Inversion Principle
 🌟 The need for service discovery 
 ************************************
 ➤ A microservice needs to know the location (IP address and port) every service it communicates with.
+
+#########################
+❄️ Database per service
+#########################
+
+################
+❄️ API gateway 
+################
+➤ 

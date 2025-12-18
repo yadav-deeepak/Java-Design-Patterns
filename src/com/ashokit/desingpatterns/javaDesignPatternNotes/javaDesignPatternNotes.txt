@@ -3201,3 +3201,270 @@ true
 ➤ Difference between Terminal and Non-Terminal expression?
 ➤ Interpreter vs Visitor?
 ➤ Is Interpreter a behavioral pattern? (Yes)
+
+######################
+🧩 SOLID Principles 
+######################
+SOLID is a set of 5 object-oriented design principles that help in writing clean, maintainable, scalable, and flexible code.
+Proposed by Robert C. Martin (Uncle Bob).
+
+🧩 What does SOLID stand for?
+*******************************
+➤ S → Single Responsibility Principle (SRP)
+➤ O → Open/Closed Principle (OCP)
+➤ L → Liskov Substitution Principle (LSP)
+➤ I → Interface Segregation Principle (ISP)
+➤ D → Dependency Inversion Principle (DIP)
+
+🧩 1. Single Responsibility Principle (SRP)
+*********************************************
+➤ Definition
+===============
+➤ A class should have only one reason to change.
+➤ A class should do only one job.
+
+❌ Bad Design (Violates SRP)
+------------------------------
+class Invoice {
+    void calculateTotal() {}
+    void printInvoice() {}
+    void saveToDB() {}
+}
+
+➤ Problems:
+➤ Business logic + Printing + DB logic in one class
+➤ Too many responsibilities
+➤ Hard to maintain and test
+
+✅ Good Design (Follows SRP)
+------------------------------
+class Invoice {
+    void calculateTotal() {}
+}
+
+class InvoicePrinter {
+    void printInvoice() {}
+}
+
+class InvoiceRepository {
+    void saveToDB() {}
+}
+
+🎯 Benefits
+*************
+➤ Easy to maintain
+➤ Easy to test
+➤ Less coupling
+➤ High cohesion
+
+🧠 Interview Tip
+*****************
+➤ SRP is about reasons to change, not number of methods.
+
+🧩 2. Open/Closed Principle (OCP)
+**********************************
+➤ Definition
+===============
+➤ Software entities should be open for extension but closed for modification.
+
+❌ Bad Design
+--------------
+class DiscountCalculator {
+    double calculate(String type) {
+        if(type.equals("DIWALI")) return 20;
+        if(type.equals("NEWYEAR")) return 30;
+        return 0;
+    }
+}
+
+➤ Every new discount → modify class
+➤ Violates OCP
+
+✅ Good Design
+-----------------
+interface Discount {
+    double calculate();
+}
+
+class DiwaliDiscount implements Discount {
+    public double calculate() { return 20; }
+}
+
+class NewYearDiscount implements Discount {
+    public double calculate() { return 30; }
+}
+
+🎯 Benefits
+*************
+➤ Easy to add new features
+➤ No risk of breaking existing code
+➤ Highly scalable design
+
+🧠 Interview Tip
+*****************
+➤ OCP is achieved using abstraction, inheritance, polymorphism.
+
+🧩 3. Liskov Substitution Principle (LSP)
+*******************************************
+➤ Definition
+===============
+➤ Objects of a superclass should be replaceable with objects of its subclass without breaking the program.
+
+❌ Bad Design
+---------------
+class Bird {
+    void fly() {}
+}
+
+class Ostrich extends Bird {
+    void fly() {
+        throw new UnsupportedOperationException();
+    }
+}
+
+➤ Ostrich cannot fly
+➤ Breaks LSP
+
+✅ Good Design
+----------------
+interface Bird {}
+
+interface FlyingBird extends Bird {
+    void fly();
+}
+
+class Sparrow implements FlyingBird {
+    public void fly() {}
+}
+
+class Ostrich implements Bird {}
+
+🎯 Benefits
+**************
+➤ Correct use of inheritance
+➤ Prevents unexpected behavior
+➤ Improves reliability
+
+🧠 Interview Tip
+*****************
+➤ If subclass changes expected behavior → LSP violation.
+
+🧩 4. Interface Segregation Principle (ISP)
+*********************************************
+➤ Definition
+==============
+➤ Clients should not be forced to depend on interfaces they do not use.
+➤ Prefer multiple small interfaces over one big interface.
+
+❌ Bad Design
+---------------
+interface Worker {
+    void work();
+    void eat();
+}
+
+class Robot implements Worker {
+    public void work() {}
+    public void eat() {} // unnecessary
+}
+
+✅ Good Design
+----------------
+interface Workable {
+    void work();
+}
+
+interface Eatable {
+    void eat();
+}
+
+class Human implements Workable, Eatable {}
+class Robot implements Workable {}
+
+🎯 Benefits
+*************
+➤ Cleaner interfaces
+➤ Loose coupling
+➤ Better readability
+➤ No unused methods
+
+🧠 Interview Tip
+*******************
+➤ ISP avoids fat interfaces.
+
+🧩 5. Dependency Inversion Principle (DIP)
+*******************************************
+➤ Definition
+===============
+➤ High-level modules should not depend on low-level modules.
+➤ Both should depend on abstractions.
+
+❌ Bad Design
+--------------
+class MySQLDatabase {
+    void connect() {}
+}
+
+class UserService {
+    MySQLDatabase db = new MySQLDatabase();
+}
+
+➤ Tight coupling
+➤ Hard to change DB
+
+✅ Good Design
+-----------------
+interface Database {
+    void connect();
+}
+
+class MySQLDatabase implements Database {
+    public void connect() {}
+}
+
+class UserService {
+    private Database db;
+    UserService(Database db) {
+        this.db = db;
+    }
+}
+
+🎯 Benefits
+**************
+➤ Loose coupling
+➤ Easy to switch implementations
+➤ Better testability (mocking)
+
+🧠 Interview Tip
+******************
+➤ Spring Framework heavily uses DIP via Dependency Injection.
+
+🧩 SOLID Principles — Quick Revision Table
+********************************************
+##################################################################
+| Principle | Focus          | Goal                              |
+| --------- | -------------- | --------------------------------- |
+| SRP       | Responsibility | One reason to change              |
+| OCP       | Extension      | Add behavior without modification |
+| LSP       | Inheritance    | Substitutability                  |
+| ISP       | Interfaces     | No unused methods                 |
+| DIP       | Dependency     | Depend on abstractions            |
+##################################################################
+
+🧩 SOLID + Design Patterns (Important Link)
+***************************
+➤ SRP → Facade, Command
+➤ OCP → Strategy, Factory, Decorator
+➤ LSP → Proper inheritance usage
+➤ ISP → Adapter, Proxy
+➤ DIP → Spring, Dependency Injection, Factory
+
+🧩 Common Interview Questions
+*******************************
+➤ What is SOLID principle?
+➤ Explain SRP with example
+➤ How does OCP help in real projects?
+➤ LSP violation example
+➤ Difference between ISP and SRP
+➤ How Spring implements DIP?
+➤ Which SOLID principle is most important? (All)
