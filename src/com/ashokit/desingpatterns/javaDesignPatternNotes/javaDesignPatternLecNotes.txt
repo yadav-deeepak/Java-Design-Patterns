@@ -1179,4 +1179,31 @@ D : Dependency Inversion Principle
 ################
 ❄️ API gateway 
 ################
-➤ 
+
+#########################
+❄️ Distributed Tracing 
+#########################
+➤ Spring cloud sieuth adds some additional properties to the logs that are related to distributed tracing. Some of the key properties of sieuth logs are: 
+1. Trace ID: Trace ID is a unique identifier that is assigned to a request when it enters the system . It is used to identify the entire trace across multiple services.
+2. Span ID: Span ID is a unique identifier that is assigned to a specific operation within a trace . Each operation in the trace is assigned a new span ID. 
+3. Parent Span ID: Parent Span ID is used to identify the parent operation within a current operation.
+4. Exportable: This property is used to indicate whether the current span should be exported to the tracing system. If this property is set to false, the span will not be sent to the tracing system.
+5. Baggage: It is a collection of key value pairs that can be attached to a span . It can be used to propagate information across multiple services. 
+These properties are added to the logs to enable distributed tracing across multiple services. They can be used to correlate logs across services and identify performance issues and errors in the distributed system.
+
+👉 The best distributed tracing techniques that can be used in real time production grade applications for java are: 
+➤ Spring cloud Sleuth with Zipkin: Spring cloud sleuth is a framework that provides distributed tracing capabilities for spring boot applications. It integrates seamlessly with zipkin an open source distributed tracing system . Spring cloud sleuth adds trace and span id to the logs and zipkin provides a user interface for visualising the trace data. 
+➤ Jaeger: It is an open source end to end distributed tracing tool that supports multiple languages and frameworks including java . Jaeger provides a user interface for visualising the trace data and can be integrated with various logging and monitoring systems. 
+➤ AWS X-ray: It is distributed tracing tool provided by amazon web services. It can be used to trace requests across multiple services running on aws and provides a visualisation of the request flow . AWS X-ray supports java and other popular languages and frameworks 
+➤ Datadog: It is a cloud monitoring platform that provides distributed tracing, logging and metrics monitoring . It supports several languages and frameworks, including java and provides a user interface for visualizing the trace data.
+
+####################
+❄️ Circuit Breaker 
+####################
+➤ It provides a fallback mechanism.
+👉 There are several ways to implement the circuit breaker pattern in java based microservices. Here are some of the most common approaches: 
+➤ Hystrix: It is a popular java library developed by netflix that provides circuit breaker functionality . It integrates with popular java based microservices frameworks like spring cloud and provides several features such as request caching ,fallbacks ,and bulkheads.
+➤ Ressilience4j: It is another java library that provides circuit breaker functionality .It offers a similar set of feautres to hystrix but with a more modular design that allows you to mix and match different resilience pattern.
+➤ Sentinel: It is a lightweight java library developed by alibaba that provides several resilience patterns, including circuit breaking .It offers features like real time monitoring rule based throttling, and advanced dashboarding. 
+➤ Spring cloud circuit breaker: It is a module of the spring cloud framework that provides an abstraction layer for circuit breaker functionality. It allows you to switch between different circuit breaker implementations without changing your code.
+➤ Akka : It is a java based toolkit and runtime for building highly concurrent , distributed and fault tolerant systems .It provides a circuit breaker implementation that integrates well with akka based microservices.

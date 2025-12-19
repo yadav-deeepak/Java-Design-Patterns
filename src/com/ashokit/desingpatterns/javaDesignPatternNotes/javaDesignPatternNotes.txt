@@ -3468,3 +3468,317 @@ class UserService {
 ➤ Difference between ISP and SRP
 ➤ How Spring implements DIP?
 ➤ Which SOLID principle is most important? (All)
+
+##############################
+🧩 Service Discovery Pattern 
+##############################
+🧩 What is Service Discovery Pattern?
+***************************************
+➤ Service Discovery is a microservices design pattern that helps services find and communicate with each other dynamically without hardcoding IP addresses or ports.
+➤ It solves the problem of dynamic service locations in distributed systems.
+
+🧩 Why Do We Need Service Discovery?
+**************************************
+➤ In microservices:
+➤ Services are deployed independently
+➤ Instances scale up/down dynamically
+➤ IP addresses & ports change frequently
+
+➤ Hardcoding service URLs leads to:
+➤ Tight coupling
+➤ Poor scalability
+➤ High maintenance
+
+👉 Service Discovery provides a dynamic lookup mechanism.
+
+🧩 Core Idea (Simple Explanation)
+**********************************
+➤ Services register themselves with a central registry
+➤ Clients query the registry to find service locations
+➤ Registry returns available instances
+➤ Client communicates with the chosen instance
+
+🧩 Key Components
+*******************
+➤ Service Provider
+➤ A microservice that offers functionality
+➤ Registers itself with the registry
+
+➤ Service Consumer
+➤ A microservice that calls another service
+
+➤ Service Registry
+➤ Central directory of all services
+➤ Maintains metadata (IP, port, health)
+
+🧩 Types of Service Discovery
+*******************************
+🔷 1️⃣ Client-Side Service Discovery
+======================================
+➤ Client queries the service registry directly
+➤ Client performs load balancing
+
+Flow:
+➤ Client → Service Registry → Service Instance
+
+📌 Example Tools
+➤ Netflix Eureka
+➤ Ribbon (client-side LB)
+
+Pros:
+➤ Simple architecture
+➤ No extra network hop
+
+Cons:
+➤ Client must implement discovery logic
+➤ Tightly coupled to registry
+
+🔷 2️⃣ Server-Side Service Discovery
+======================================
+➤ Client sends request to a load balancer
+➤ Load balancer queries registry and forwards request
+
+Flow:
+➤ Client → Load Balancer → Service Registry → Service Instance
+
+📌 Example Tools
+➤ AWS ALB / ELB
+➤ Kubernetes Service
+➤ NGINX
+
+Pros:
+➤ Client is simple
+➤ Centralized load balancing
+
+Cons:
+➤ Extra infrastructure
+➤ Slight latency due to extra hop
+
+🧩 Service Registration Methods
+********************************
+➤ Self-Registration
+➤ Service registers itself on startup
+➤ Deregisters on shutdown
+
+➤ Third-Party Registration
+➤ External agent handles registration
+➤ Example: Kubernetes
+
+🧩 Popular Service Discovery Tools
+************************************
+➤ Netflix Eureka
+➤ Consul
+➤ Apache Zookeeper
+➤ Kubernetes DNS / Services
+➤ AWS Cloud Map
+
+🧩 Service Discovery in Spring Boot (Very Important)
+*****************************************************
+➤ Spring Cloud Netflix Eureka is commonly used
+
+Server:
+➤ @EnableEurekaServer
+
+Client:
+➤ @EnableEurekaClient
+
+➤ Services register automatically on startup
+➤ Uses heartbeat mechanism
+
+🧩 Benefits
+**************
+➤ No hardcoded service URLs
+➤ Supports auto-scaling
+➤ Improves fault tolerance
+➤ Enables dynamic load balancing
+➤ Better maintainability
+
+🧩 Challenges
+****************
+➤ Registry becomes critical component
+➤ Needs high availability
+➤ Network latency
+➤ Security concerns (service spoofing)
+
+🧩 Service Discovery vs API Gateway (Interview Favorite)
+*********************************************************
+➤ Service Discovery
+➤ Finds service instances
+➤ Internal communication
+
+➤ API Gateway
+➤ Entry point for clients
+➤ Handles routing, auth, rate limiting
+
+👉 Both are often used together
+
+🧩 Real-World Example
+***********************
+➤ E-commerce App
+➤ Order Service
+➤ Payment Service
+➤ Inventory Service
+
+➤ All services register with Eureka
+➤ Order Service discovers Payment Service dynamically
+
+🧩 Common Interview Questions
+*******************************
+➤ What problem does Service Discovery solve?
+➤ Difference between client-side and server-side discovery?
+➤ How does Eureka work internally?
+➤ What happens if the service registry goes down?
+➤ How does Kubernetes handle service discovery?
+➤ Difference between Service Discovery and DNS?
+
+🧩 One-Line Summary (For Interviews)
+***************************************
+➤ Service Discovery Pattern enables microservices to dynamically find and communicate with each other without hardcoding network locations.
+
+################################
+🧩 Database-per-Service Pattern 
+#################################
+🧩 Definition
+***************
+➤ Database-per-Service is a microservices data management pattern where each microservice owns its own database.
+➤ No other service is allowed to directly access that database — interaction happens only via APIs or events.
+
+🧩 Intent (Why Database-per-Service?)
+****************************************
+➤ To achieve loose coupling between microservices
+➤ To allow independent development, deployment, and scaling
+➤ To avoid shared database bottlenecks
+➤ To enable service autonomy and team ownership
+
+🧩 Core Rule (Very Important for Interviews)
+**********************************************
+➤ One service → One database → One owner
+➤ Other services must NOT query that database directly
+➤ Communication must happen via:
+➤ REST APIs
+➤ gRPC
+➤ Events (Kafka / RabbitMQ)
+
+🧩 Why NOT a Shared Database? (Problem Statement)
+***************************************************
+➤ Tight coupling between services
+➤ Schema changes affect multiple services
+➤ Hard to deploy independently
+➤ Difficult to scale services separately
+➤ Violates microservice autonomy
+
+📌 Shared DB = Distributed Monolith
+
+🧩 Architecture Overview
+****************************
+➤ Order Service → Order DB
+➤ Payment Service → Payment DB
+➤ User Service → User DB
+
+➤ Communication:
+➤ Order → Payment (API/Event)
+➤ Order → User (API/Event)
+
+🧩 Polyglot Persistence (Key Advantage)
+****************************************
+➤ Each service can choose the best database for its needs
+
+Examples:
+➤ User Service → PostgreSQL
+➤ Product Service → MongoDB
+➤ Search Service → Elasticsearch
+➤ Cache Service → Redis
+
+📌 Very common interview keyword
+
+🧩 How Services Share Data (Without Sharing DB)
+*************************************************
+1️⃣ API Composition
+====================
+➤ Service A calls Service B’s API to fetch required data
+➤ Simple but increases latency
+
+2️⃣ Event-Driven Communication (Preferred)
+===========================================
+➤ Service publishes events
+➤ Other services consume and store required data locally
+➤ Leads to eventual consistency
+
+🧩 Consistency Model
+***********************
+➤ Strong consistency ❌ (not possible across DBs)
+➤ Eventual consistency ✅
+
+📌 Microservices trade consistency for availability and scalability
+
+🧩 Handling Transactions (Big Interview Topic)
+**************************************************
+➤ 2-Phase Commit (2PC) ❌
+➤ Not recommended (tight coupling, poor scalability)
+
+➤ Saga Pattern ✅
+➤ Sequence of local transactions
+➤ Each service commits its DB
+➤ Compensating actions on failure
+
+📌 Database-per-service + Saga = Standard microservices approach
+
+🧩 Advantages
+****************
+➤ Loose coupling
+➤ Independent scaling
+➤ Independent deployments
+➤ Service autonomy
+➤ Enables polyglot persistence
+➤ Better fault isolation
+
+🧩 Disadvantages
+*******************
+➤ Complex data consistency
+➤ Difficult cross-service queries
+➤ Data duplication
+➤ Requires distributed transaction handling
+➤ Operational complexity
+
+🧩 Common Anti-Patterns (Avoid These!)
+****************************************
+➤ One DB with multiple schemas
+➤ One DB user accessing all tables
+➤ Services running joins across databases
+➤ Direct DB access from another service
+
+📌 These break microservices principles
+
+🧩 Real-World Usage
+*********************
+➤ Netflix microservices
+➤ Amazon retail services
+➤ Uber backend architecture
+➤ Spring Boot + Microservices
+➤ Kubernetes-based systems
+
+🧩 Database-per-Service vs Shared Database
+*********************************************
+################################################################
+| Feature             | Shared Database | Database-per-Service |
+| ------------------- | --------------- | -------------------- |
+| Coupling            | High ❌         | Low ✅              |
+| Scalability         | Limited ❌      | High ✅             |
+| Deployment          | Difficult ❌    | Independent ✅      |
+| Consistency         | Strong          | Eventual             |
+| Microservices Ready | ❌              | ✅                  |
+################################################################
+
+🧩 Interview Questions (Very Important)
+*****************************************
+➤ What is Database-per-Service pattern?
+➤ Why is shared DB bad for microservices?
+➤ How do services communicate without DB sharing?
+➤ How do you handle transactions?
+➤ What is polyglot persistence?
+➤ How is consistency maintained?
+➤ Can two services use the same DB engine? (Yes, but not the same schema)
+
+🧩 Key One-Line Summary (Interview Gold)
+******************************************
+➤ Database-per-Service ensures service autonomy by preventing data sharing at the database level and enforcing communication via APIs or events.
