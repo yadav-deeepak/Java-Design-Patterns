@@ -1200,10 +1200,46 @@ These properties are added to the logs to enable distributed tracing across mult
 ####################
 ❄️ Circuit Breaker 
 ####################
-➤ It provides a fallback mechanism.
+➤ It is used whenever we need to provides a fallback mechanism.
+➤ Whenever our service is down we can display some static data or message showing that server is down please try again later.
+
 👉 There are several ways to implement the circuit breaker pattern in java based microservices. Here are some of the most common approaches: 
 ➤ Hystrix: It is a popular java library developed by netflix that provides circuit breaker functionality . It integrates with popular java based microservices frameworks like spring cloud and provides several features such as request caching ,fallbacks ,and bulkheads.
 ➤ Ressilience4j: It is another java library that provides circuit breaker functionality .It offers a similar set of feautres to hystrix but with a more modular design that allows you to mix and match different resilience pattern.
 ➤ Sentinel: It is a lightweight java library developed by alibaba that provides several resilience patterns, including circuit breaking .It offers features like real time monitoring rule based throttling, and advanced dashboarding. 
 ➤ Spring cloud circuit breaker: It is a module of the spring cloud framework that provides an abstraction layer for circuit breaker functionality. It allows you to switch between different circuit breaker implementations without changing your code.
 ➤ Akka : It is a java based toolkit and runtime for building highly concurrent , distributed and fault tolerant systems .It provides a circuit breaker implementation that integrates well with akka based microservices.
+
+#####################
+❄️ Stangler Pattern 
+#####################
+➤ Strangler Pattern is a software design pattern used to incrementally replace an existing legacy system with a new system without causing any disruption to the existing system . The pattern is named after the way that certain species of strangler fig trees envelop and gradually replace a host tree. 
+➤ If we have a monolithic application and we want to convert it into a microservice application then we will use this strangler patter .
+➤ The strangler pattern involves the following steps : 
+1. Identify the boundaries: Identify the boundaries of the legacy system i.e. the interfaces between the system and the outside world .
+2. Create a facade: Create a facade or API layer around the legacy system . This facade will be used by the new system to access the legacy system 
+3. Implement the new system: Implement the new system as a separate standalone system . This system will eventually replace the legacy system .
+4. Incrementally replace functionality: Incrementally replace functionality in the legacy system with equivalent functionality in the new system . This can be done by routing requests through the facade layer and gradually migrating functionality from the legacy system to the new system.
+5. Gradually decommission the legacy system: Once all functionality has been migrated to the new system, the legacy system can be decommissioned. 
+➤ The strangler pattern allows for a gradual and controlled migration from a legacy system to a new system . It reduces the risk and disruption associated with a complete system rewrite or replacement and allows for the benifits of the new system to be realized over time, while still maintaining the stability and functionality of the legacy system.
+
+##################################
+❄️ Blue Green Deployment Pattern 
+##################################
+➤ It is a technique used for releasing software updates with zero downtime and minimizing risks of failure or errors. The basic idea behind this pattern is to have two identical environments(blue and green) where one environment is active(serving production traffic) while the other is idle(inactive). The new version of the application is deployed to the inactive environment and once it has been tested and verified to be working correctly the traffic is switched to the new version by directing it to the inactive environment, which becomes the active one. The previously active environment becomes the inactive environment and is ready for the next deployement. 
+➤ This pattern provides a number of benefits including: 
+1. Zero-downtime deployement: The blue green pattern allows you to  deploy a new version of your application without any downtime. Since both the old and new versions of the application are running simultaneously the switch from one version to another is seamless and does not disrupts the end users.
+2. Risk mitigation: If there are any issues with the new version of the application you can easily switch back to the old version by directing the traffic to the previously active environment. This makes it easier to mitigate risks and minimize the impact of any errors or failures.
+3. Testing: The blue green pattern also provides an opportunity to test the new version of the application in a real environment without impacting  production traffic. This makes it easier to identify and fix any issues before the new version is released to the end users. 
+4. Rollback: In case of any issues with the new version, it is easier to rollback to the previous version since the previous environment is still intact. 
+➤ The blue green deployment pattern is commonly used in microservices architecture where individual services can be deployed independently without disrupting the entire system. 
+
+➤ Blue Environment: The old application running in the production is called blue environment
+➤ Green environment: The new services deployed which replicates the given part of old application is called the green environment. 
+
+#################
+❄️ Saga Pattern 
+#################
+➤ The saga pattern is a design pattern used in microservices architecture to manage transaction and ensure data consistency across distributed systems. In a microservices architecture business processes are divided into multiple services, each with its own database and transactional boundaries. When a business transaction spans mulitiple services, it becomes difficult to maintain consistency across all the services.
+➤ The saga pattern provides a way to manage distributed transactions across multiple services by breaking the transaction into smaller individual transactions that can be rolled back if necessary . A saga is a sequence of local transactions that work together to accomplish a global transaction. Each local transaction updates the local database of the service and publishes a message to trigger the next local transaction in the sequence . If any local transaction fails, the saga can be rolled back by invoking a compensating transaction that undoes the previous transaction .
+➤ The saga pattern is useful in situations where the traditional two phase commit protocol is not feasible or desirable such as in highly distributed systems or systems with long running transactions. By breaking the transaction into smaller , individual transactions the saga pattern provides better fault tolerance and enables more flexible and scalable microservice architecture.
