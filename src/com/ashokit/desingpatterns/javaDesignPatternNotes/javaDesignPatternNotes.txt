@@ -4293,3 +4293,283 @@ public String fallbackPayment(Exception e) {
 🧩 One-Line Summary (Revision Ready)
 **************************************
 ➤ Circuit Breaker prevents repeated calls to failing services by failing fast and allowing recovery time.
+
+##############################
+🧩 Strangler Design Pattern 
+##############################
+🧩 Definition
+***************
+➤ The Strangler Pattern is an architectural migration pattern used to gradually replace a legacy (monolithic) system with a new system, without shutting down the old one.
+➤ The new system “strangles” the old system over time by incrementally taking over functionality, until the legacy system can be safely removed.
+
+📌 Name inspired by the Strangler Fig tree, which grows around a tree and eventually replaces it.
+
+🧩 Intent (Why Strangler Pattern?)
+***********************************
+➤ To modernize legacy applications without big-bang rewrite
+➤ To reduce risk during system migration
+➤ To allow continuous delivery while migration is in progress
+➤ To move from monolith → microservices safely
+➤ To keep the system always running during migration
+
+🧩 Core Idea (One-Line Explanation)
+************************************
+➤ Intercept requests → Route some to new system → Gradually increase → Retire old system
+
+🧩 When to Use Strangler Pattern?
+***********************************
+➤ Migrating a legacy monolithic application
+➤ Moving to microservices architecture
+➤ When rewriting everything at once is risky
+➤ When business cannot afford downtime
+➤ When legacy code is hard to modify but must be replaced
+
+🧩 High-Level Architecture Flow
+**********************************
+➤ Client sends request
+➤ Strangler layer (API Gateway / Proxy / Router) intercepts request
+➤ Based on logic:
+➤ Old feature → Legacy system
+➤ New feature → New microservice
+➤ Over time, more routes point to new services
+➤ Legacy system is eventually removed
+
+🧩 Key Components
+*******************
+➤ Legacy System
+➤ Existing monolithic application
+
+➤ New System (Microservices / Modern App)
+➤ Built using modern tech stack
+
+➤ Strangler Facade / Router
+➤ API Gateway
+➤ Reverse Proxy
+➤ Load Balancer
+➤ Feature-based routing
+
+🧩 Example — E-Commerce Migration
+**********************************
+➤ Old system handles:
+➤ User
+➤ Orders
+➤ Payments
+➤ Inventory
+
+➤ Migration steps:
+➤ Step 1: New User Service
+➤ Step 2: Route /users/* → New service
+➤ Step 3: Other requests → Legacy app
+➤ Step 4: Gradually migrate Orders, Payments, Inventory
+➤ Step 5: Remove monolith completely
+
+🧩 Simple Diagram (Conceptual)
+********************************
+Client
+   |
+API Gateway / Proxy
+   |------------------> Legacy Monolith
+   |
+   |------------------> New Microservices
+
+🧩 Advantages
+***************
+➤ Zero or minimal downtime
+➤ Low-risk migration
+➤ Incremental delivery of value
+➤ Easier rollback if something fails
+➤ Enables modernization step-by-step
+➤ Business continuity maintained
+
+🧩 Disadvantages
+*******************
+➤ Increased system complexity (temporary)
+➤ Need to maintain two systems in parallel
+➤ Routing logic can become complex
+➤ Data synchronization challenges
+➤ Requires strong monitoring & testing
+
+🧩 Strangler Pattern vs Big-Bang Rewrite (Interview Favorite)
+**************************************************************
+➤ Big-Bang Rewrite
+➤ Rewrite everything at once
+➤ High risk
+➤ Long delivery time
+➤ Often fails
+
+➤ Strangler Pattern
+➤ Incremental migration
+➤ Low risk
+➤ Continuous delivery
+➤ High success rate
+
+🧩 Real-World Usage
+*********************
+➤ Netflix monolith → microservices
+➤ Amazon legacy systems migration
+➤ Enterprise banking modernization
+➤ ERP system refactoring
+➤ Cloud migration (On-prem → Cloud)
+
+🧩 Best Practices
+*******************
+➤ Start with low-risk modules
+➤ Use API Gateway for routing
+➤ Keep clear ownership of features
+➤ Ensure proper logging & monitoring
+➤ Avoid shared database between old & new systems
+➤ Remove legacy code aggressively once replaced
+
+🧩 Related Patterns (Very Important)
+**************************************
+➤ API Gateway → Routing traffic
+➤ Database per Service → Avoid tight coupling
+➤ Circuit Breaker → Protect new services
+➤ Distributed Tracing → Track cross-system requests
+➤ Anti-Corruption Layer → Protect new domain model
+
+🧩 Common Interview Questions
+*******************************
+➤ What is the Strangler Pattern?
+➤ Why is it preferred over big-bang rewrite?
+➤ How does API Gateway help in Strangler Pattern?
+➤ Challenges in Strangler migration?
+➤ How do you handle database migration?
+➤ Is Strangler a design pattern or architectural pattern?
+
+📌 Answer: It is an architectural pattern.
+
+###################################
+🧩 Blue-Green Deployment Pattern 
+####################################
+🧩 Definition
+***************
+➤ Blue-Green Deployment is a deployment pattern used to release new versions of an application with zero (or near-zero) downtime.
+➤ It maintains two identical production environments:
+➤ Blue → Current live (old version)
+➤ Green → New version (idle/testing)
+
+➤ At any time, only one environment serves live traffic.
+
+🧩 Why Blue-Green Deployment? (Intent)
+****************************************
+➤ To achieve zero downtime deployments
+➤ To reduce deployment risk
+➤ To enable quick rollback
+➤ To test new versions safely in production-like environment
+➤ To improve release confidence
+
+🧩 How Blue-Green Deployment Works (Step-by-Step)
+***************************************************
+➤ Step 1:
+➤ Blue environment is LIVE (v1)
+➤ Green environment is IDLE
+
+➤ Step 2:
+➤ Deploy new version (v2) to Green
+➤ Run tests (smoke tests, sanity tests)
+
+➤ Step 3:
+➤ Switch traffic from Blue → Green
+➤ Done using:
+➤ Load Balancer
+➤ DNS switch
+➤ API Gateway
+
+➤ Step 4:
+➤ Green becomes LIVE
+➤ Blue becomes IDLE (acts as rollback)
+
+🧩 Simple Diagram (Conceptual)
+********************************
+➤ User Traffic → Load Balancer
+➤ Blue (v1) ❌
+➤ Green (v2) ✅
+
+➤ Rollback = switch traffic back to Blue instantly
+
+🧩 Key Components Involved
+*****************************
+➤ Load Balancer (AWS ALB, Nginx, HAProxy)
+➤ CI/CD Pipeline (Jenkins, GitHub Actions)
+➤ Cloud Infra (AWS, Azure, GCP)
+➤ Containers / VMs / Kubernetes
+
+🧩 Real-World Examples
+*************************
+➤ AWS Elastic Beanstalk (Blue-Green supported)
+➤ Kubernetes (via service selector switch)
+➤ Spring Boot microservices behind API Gateway
+➤ Netflix & large-scale SaaS platforms
+
+🧩 Advantages
+***************
+➤ Zero downtime deployment
+➤ Very fast rollback
+➤ Safer releases
+➤ Production-like testing before release
+➤ Simple and predictable
+
+🧩 Disadvantages
+*****************
+➤ Requires double infrastructure (costly)
+➤ Database changes can be tricky
+➤ Not ideal for very large monolith DB migrations
+➤ Needs careful version compatibility
+
+🧩 Handling Database in Blue-Green
+**************************************
+➤ Prefer backward-compatible DB changes
+➤ Use:
+➤ Expand-and-contract strategy
+➤ Feature toggles
+➤ Avoid destructive schema changes during switch
+
+🧩 Blue-Green vs Canary Deployment (Very Common Interview Question)
+**********************************************************************
+➤ Blue-Green
+➤ Switch 100% traffic at once
+➤ Fast rollback
+➤ Higher infra cost
+
+➤ Canary
+➤ Gradual traffic rollout (5% → 50% → 100%)
+➤ Slower rollback
+➤ Lower risk, more control
+
+🧩 Blue-Green vs Rolling Deployment
+**************************************
+➤ Rolling
+➤ Update instances one by one
+➤ No extra infra
+➤ Harder rollback
+
+➤ Blue-Green
+➤ Full switch
+➤ Instant rollback
+➤ Needs extra infra
+
+🧩 When to Use Blue-Green Deployment?
+***************************************
+➤ High-availability systems
+➤ Customer-facing applications
+➤ Microservices architecture
+➤ Frequent releases
+➤ When rollback speed is critical
+
+🧩 Interview-Important Points
+**********************************
+➤ Zero downtime achieved via traffic switch
+➤ Rollback = routing change (not redeploy)
+➤ Needs two identical environments
+➤ Database compatibility is the biggest challenge
+➤ Often used with CI/CD pipelines
+
+🧩 Common Interview Questions
+********************************
+➤ What is Blue-Green deployment?
+➤ How is rollback handled?
+➤ Difference between Blue-Green and Canary?
+➤ How do you manage DB changes?
+➤ Is Blue-Green suitable for monoliths?
+➤ How is it implemented in Kubernetes/AWS?
