@@ -4573,3 +4573,187 @@ API Gateway / Proxy
 ➤ How do you manage DB changes?
 ➤ Is Blue-Green suitable for monoliths?
 ➤ How is it implemented in Kubernetes/AWS?
+
+########################
+🧩 Saga Design Pattern 
+########################
+🧩 Definition
+***************
+➤ The Saga Design Pattern is a distributed transaction management pattern used in microservices architecture.
+➤ It ensures data consistency across multiple microservices by breaking a long transaction into a sequence of local transactions, where each transaction has a compensating (rollback) transaction.
+
+👉 Instead of a single ACID transaction, Saga uses eventual consistency.
+
+🧩 Why Saga Pattern is Needed? (Problem Statement)
+****************************************************
+➤ In monolithic apps → single database → ACID transactions
+➤ In microservices:
+➤ Each service has its own database
+➤ Distributed transactions (2PC) are:
+➤ Slow
+➤ Not scalable
+➤ Tightly coupled
+
+👉 Saga solves this by managing consistency without distributed transactions.
+
+🧩 Key Concepts (Must-Know for Interviews)
+*******************************************
+➤ Saga = Sequence of local transactions
+➤ Each local transaction:
+➤ Updates its own database
+➤ Publishes an event or triggers next step
+➤ If any step fails:
+➤ Compensating transactions undo previous steps
+➤ Consistency model: Eventually consistent
+
+🧩 Real-World Example (Very Important)
+****************************************
+🛒 Order Processing System
+=============================
+Services involved:
+➤ Order Service
+➤ Payment Service
+➤ Inventory Service
+
+🧩 Saga Flow (Success Case)
+*****************************
+➤ Order Service → Create Order
+➤ Payment Service → Deduct Payment
+➤ Inventory Service → Reserve Items
+➤ Order marked as CONFIRMED
+
+🧩 Saga Flow (Failure Case)
+*****************************
+➤ Payment fails ❌
+➤ Trigger compensating transactions:
+➤ Cancel Order
+➤ Release Inventory (if already reserved)
+
+🧩 Two Types of Saga Pattern
+******************************
+🧩 1️⃣ Choreography-Based Saga (Event-Driven)
+===============================================
+➤ No central controller
+➤ Services communicate via events
+➤ Each service knows:
+➤ When to act
+➤ How to compensate
+
+Example Flow:
+--------------
+➤ OrderCreated Event
+➤ PaymentService listens → PaymentCompleted Event
+➤ InventoryService listens → InventoryReserved Event
+
+➤ If failure → emit failure event → compensation happens
+
+✅ Pros:
+---------
+➤ Highly decoupled
+➤ Easy to scale
+➤ No single point of failure
+
+❌ Cons:
+----------
+➤ Hard to understand flow
+➤ Difficult debugging
+➤ Event dependency chaos in large systems
+
+🧩 2️⃣ Orchestration-Based Saga (Central Coordinator)
+======================================================
+➤ Central Saga Orchestrator controls flow
+➤ Orchestrator tells services what to do
+➤ Handles success & compensation logic
+
+Example:
+---------
+➤ Saga Orchestrator
+➤ Call Order Service
+➤ Call Payment Service
+➤ Call Inventory Service
+➤ On failure → trigger rollback services
+
+✅ Pros:
+----------
+➤ Clear control flow
+➤ Easier debugging
+➤ Better for complex workflows
+
+❌ Cons:
+---------
+➤ Central point of failure (can be mitigated)
+➤ Slightly tighter coupling
+
+🧩 Saga Pattern Architecture Diagram (Conceptual)
+***************************************************
+➤ Client
+➤ Saga Orchestrator (optional)
+➤ Microservices (each with own DB)
+➤ Message Broker (Kafka / RabbitMQ)
+
+🧩 How Compensation Works (Very Important)
+*********************************************
+➤ Compensation ≠ Rollback
+➤ Compensation is a new business action
+➤ Example:
+➤ Payment Deducted → Compensation = Refund
+➤ Inventory Reserved → Compensation = Release Items
+
+🧩 Saga vs Two-Phase Commit (2PC)
+**********************************
+######################################
+| Feature        | Saga     | 2PC    |
+| -------------- | -------- | ------ |
+| Consistency    | Eventual | Strong |
+| Scalability    | High     | Low    |
+| Coupling       | Loose    | Tight  |
+| Performance    | Fast     | Slow   |
+| Cloud Friendly | ✅ Yes   | ❌ No |
+######################################
+
+🧩 When to Use Saga Pattern?
+*******************************
+➤ Microservices with Database per Service
+➤ Long-running business transactions
+➤ Need high scalability & availability
+➤ When eventual consistency is acceptable
+
+🧩 When NOT to Use Saga Pattern?
+**********************************
+➤ Simple monolithic applications
+➤ When strong consistency is mandatory
+➤ Very simple CRUD services
+
+🧩 Advantages
+***************
+➤ Enables distributed transactions
+➤ Highly scalable
+➤ Avoids distributed locking
+➤ Cloud-native friendly
+➤ Improves system resilience
+
+🧩 Disadvantages
+*******************
+➤ Complex implementation
+➤ Debugging is difficult
+➤ Compensation logic is tricky
+➤ Requires careful design
+
+🧩 Saga Pattern with Spring Boot (Conceptual)
+**********************************************
+➤ Use Kafka / RabbitMQ for events
+➤ Use Spring State Machine or workflow engines
+➤ Use Axon Framework / Camunda / Temporal
+
+🧩 Common Interview Questions
+*******************************
+➤ What is Saga Design Pattern?
+➤ Why Saga instead of 2PC?
+➤ Difference between Choreography and Orchestration Saga?
+➤ What is compensating transaction?
+➤ Is Saga ACID compliant?
+➤ Where is Saga used in real systems?
+
+🧩 One-Line Summary (Interview Gold)
+**************************************
+➤ Saga Pattern manages distributed transactions in microservices using a sequence of local transactions with compensating actions to achieve eventual consistency.
