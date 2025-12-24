@@ -1,0 +1,282 @@
+###############################
+🧩 CREATIONAL DESIGN PATTERNS
+###############################
+🧩 Singleton Pattern
+**********************
+➤ Ensures only one instance of a class exists
+➤ Provides global access point
+➤ Used for shared resources (Logger, DB connection, Config)
+
+➤ Common implementations:
+➤ Eager
+➤ Lazy
+➤ Double-Checked Locking (volatile)
+➤ Bill Pugh (Best)
+➤ Enum Singleton (Most secure)
+
+➤ Problems handled:
+➤ Thread safety
+➤ Serialization
+➤ Reflection
+➤ Cloning
+
+➤ Real examples:
+➤ Runtime.getRuntime()
+➤ Spring Beans (default scope)
+
+🧩 Factory Pattern
+********************
+➤ Creates objects without exposing creation logic
+➤ Returns objects based on input
+➤ Client depends on interface, not concrete class
+
+➤ Benefits:
+➤ Loose coupling
+➤ Centralized object creation
+➤ Follows OCP
+
+➤ Real examples:
+➤ DriverManager.getConnection()
+➤ Calendar.getInstance()
+
+🧩 Abstract Factory Pattern
+******************************
+➤ Factory of factories
+➤ Creates families of related objects
+➤ Ensures product consistency
+
+➤ Difference from Factory:
+➤ Factory → one product
+➤ Abstract Factory → multiple related products
+
+➤ Used in:
+➤ UI themes
+➤ Spring framework
+
+🧩 Builder Pattern
+*********************
+➤ Builds complex objects step-by-step
+➤ Avoids telescoping constructors
+➤ Ideal for optional parameters
+➤ Helps create immutable objects
+
+➤ Key feature:
+➤ Fluent API (.setX().setY().build())
+
+➤ Used in:
+➤ StringBuilder
+➤ ProcessBuilder
+➤ Lombok @Builder
+
+🧩 Prototype Pattern
+**********************
+➤ Creates objects by cloning existing objects
+➤ Avoids costly object creation
+➤ Uses clone() method
+
+➤ Types:
+➤ Shallow Copy
+➤ Deep Copy
+
+➤ Use case:
+➤ When object creation is expensive
+
+###############################
+🧩 STRUCTURAL DESIGN PATTERNS
+###############################
+🧩 Adapter Pattern
+*********************
+➤ Converts one interface into another
+➤ Allows incompatible classes to work together
+➤ Uses composition (Object Adapter)
+
+➤ Real examples:
+➤ Arrays.asList()
+➤ Spring HandlerAdapter
+
+➤ Adapter ≠ Decorator
+➤ Adapter → interface conversion
+➤ Decorator → behavior addition
+
+🧩 Decorator Pattern
+**********************
+➤ Adds new behavior dynamically at runtime
+➤ Uses wrapping instead of inheritance
+➤ Avoids subclass explosion
+
+➤ All decorators implement same interface
+➤ Multiple decorators can be stacked
+
+➤ Real examples:
+➤ Java I/O Streams
+➤ Logging, Caching
+
+🧩 Facade Pattern
+*******************
+➤ Provides simplified interface to complex subsystem
+➤ Hides internal complexity
+➤ Improves usability and readability
+
+➤ Used in:
+➤ Spring
+➤ Logging frameworks
+
+➤ Facade ≠ Adapter
+➤ Facade simplifies
+➤ Adapter converts interface
+
+🧩 Proxy Pattern
+*******************
+➤ Controls access to an object
+➤ Adds extra behavior like security, caching, lazy loading
+
+➤ Types:
+➤ Virtual Proxy
+➤ Protection Proxy
+➤ Remote Proxy
+
+➤ Used in:
+➤ Spring AOP
+➤ Hibernate lazy loading
+
+🧩 Bridge Pattern
+*******************
+➤ Separates abstraction from implementation
+➤ Avoids class explosion
+➤ Uses composition
+
+➤ Example:
+➤ Shape + Color
+➤ JDBC Driver
+
+➤ Bridge ≠ Adapter
+➤ Bridge designed upfront
+➤ Adapter used later
+
+🧩 Composite Pattern
+************************
+➤ Treats individual objects and groups uniformly
+➤ Tree-like structure
+➤ Client doesn’t differentiate leaf & composite
+
+➤ Used in:
+➤ File systems
+➤ UI components
+
+🧩 Flyweight Pattern
+***********************
+➤ Reduces memory usage
+➤ Shares common objects
+➤ Separates intrinsic & extrinsic state
+
+➤ Used when:
+➤ Large number of similar objects
+
+➤ Example:
+➤ Text editors
+➤ Game characters
+
+###############################
+🧩 BEHAVIORAL DESIGN PATTERNS
+###############################
+🧩 Chain of Responsibility
+****************************
+➤ Passes request along a chain of handlers
+➤ Each handler decides to process or forward
+➤ Removes large if-else blocks
+
+➤ Used in:
+➤ Filters
+➤ Logging
+➤ Authentication
+
+🧩 Observer Pattern
+**********************
+➤ One-to-many dependency
+➤ Observers get notified on state change
+➤ Loose coupling
+
+➤ Used in:
+➤ Event listeners
+➤ Kafka consumers
+➤ UI frameworks
+
+➤ Types:
+➤ Push model
+➤ Pull model
+
+🧩 Template Method Pattern
+****************************
+➤ Defines algorithm skeleton
+➤ Subclasses override specific steps
+➤ Code reuse
+
+➤ Uses:
+➤ Abstract class
+➤ Hook methods
+
+➤ Used in:
+➤ JDBC
+➤ Spring
+
+🧩 State Pattern
+******************
+➤ Object behavior changes based on internal state
+➤ Eliminates state-based conditionals
+➤ Each state is a separate class
+
+➤ State ≠ Strategy
+➤ State → behavior depends on state
+➤ Strategy → interchangeable algorithms
+
+🧩 Command Pattern
+*********************
+➤ Encapsulates request as an object
+➤ Supports undo/redo
+➤ Decouples sender & receiver
+
+➤ Used in:
+➤ UI buttons
+➤ Task queues
+
+🧩 Iterator Pattern
+*********************
+➤ Provides sequential access to collection
+➤ Hides internal structure
+➤ Standard traversal mechanism
+
+➤ Used in:
+➤ Java Collections (Iterator)
+
+🧩 Memento Pattern
+********************
+➤ Captures object state without exposing internals
+➤ Supports undo/rollback
+➤ Components:
+➤ Originator
+➤ Memento
+➤ Caretaker
+
+➤ Used in:
+➤ Editors
+➤ Transactions
+
+🧩 Mediator Pattern
+*********************
+➤ Centralizes communication between objects
+➤ Reduces object-to-object dependencies
+➤ Promotes loose coupling
+
+➤ Used in:
+➤ Chat applications
+➤ UI dialogs
+
+🧩 Interpreter Pattern
+************************
+➤ Defines grammar & interprets expressions
+➤ Used for simple language parsing
+➤ Not suitable for complex grammars
+
+➤ Used in:
+➤ Expression evaluators
+➤ Rule engines
